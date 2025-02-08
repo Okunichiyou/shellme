@@ -45,6 +45,8 @@ struct RepresentableTextField: UIViewRepresentable {
     }
 
     func updateUIView(_ uiView: UITextField, context: Context) {
-        uiView.text = text
+        if uiView.text != text && uiView.markedTextRange == nil {
+            uiView.text = text
+        }
     }
 }
