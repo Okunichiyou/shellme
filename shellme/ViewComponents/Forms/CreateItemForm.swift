@@ -15,20 +15,24 @@ struct CreateItemForm: View {
     @State private var name: String = ""
     @State private var amount: String = ""
     @State private var price: String = ""
-    @FocusState var focus:Bool
+    @FocusState var focus: Bool
 
     var body: some View {
         Form {
-            RepresentableTextField(text: $name, placeholder: "商品", isFirstResponder: true)
-                .padding(.vertical)
-                .focused(self.$focus)
             RepresentableTextField(
-                text: $amount, placeholder: "個数", keyboardType: .numberPad)
-                .padding(.vertical)
+                text: $name, placeholder: "商品", isFirstResponder: true
+            )
+            .padding(.vertical)
+            .focused(self.$focus)
+            RepresentableTextField(
+                text: $amount, placeholder: "個数", keyboardType: .numberPad
+            )
+            .padding(.vertical)
             RepresentableTextField(
                 text: $price, placeholder: "Price (optional)",
-                keyboardType: .numberPad)
-                .padding(.vertical)
+                keyboardType: .numberPad
+            )
+            .padding(.vertical)
             Button("保存") {
                 saveItem()
                 resetForm()
@@ -47,7 +51,7 @@ struct CreateItemForm: View {
         name = ""
         amount = ""
         price = ""
-        
+
         self.focus = true
     }
 }

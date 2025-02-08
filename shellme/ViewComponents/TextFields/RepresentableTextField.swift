@@ -36,7 +36,7 @@ struct RepresentableTextField: UIViewRepresentable {
         textField.borderStyle = .roundedRect
         textField.keyboardType = keyboardType
         textField.delegate = context.coordinator
-        
+
         if isFirstResponder {
             textField.becomeFirstResponder()
         }
