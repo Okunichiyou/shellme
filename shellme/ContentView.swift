@@ -12,6 +12,7 @@ struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var items: [Item]
     @State private var isAddFormPresented = false
+    @State private var isAllDeleteDialogPresented = false
 
     var body: some View {
         NavigationView {
@@ -40,6 +41,7 @@ struct ContentView: View {
                             }
                         }
                     }
+                    .onDelete(perform: deleteItems(indexes:))
                 }
 
                 VStack {
@@ -47,11 +49,23 @@ struct ContentView: View {
 
                     HStack {
                         Button(action: {
-                            print("Trash button tapped")
+                            isAllDeleteDialogPresented = true
                         }) {
                             Image(systemName: "trash")
                         }
                         .dangerCircleButton(size: .xlarge)
+                        .confirmationDialog(
+                            "全商品の削除", isPresented: $isAllDeleteDialogPresented, titleVisibility: .visible
+                        ) {
+                            Button("削除", role: .destructive) {
+                                deleteAllItems()
+                            }
+                            Button("キャンセル", role: .cancel) {
+                                isAllDeleteDialogPresented = false
+                            }
+                        } message: {
+                            Text("リスト内の全ての商品が削除されます。削除したデータは戻りません。")
+                        }
 
                         Spacer()
 
@@ -72,11 +86,18 @@ struct ContentView: View {
             CreateItemForm()
         }
     }
-}
 
-#Preview {
-    ContentView()
-        .modelContainer(SampleData.shared.modelContainer)
+    private func deleteItems(indexes: IndexSet) {
+        for index in indexes {
+            modelContext.delete(items[index])
+        }
+    }
+
+    private func deleteAllItems() {
+        for item in items {
+            modelContext.delete(item)
+        }
+    }
 }
 
 #Preview {
