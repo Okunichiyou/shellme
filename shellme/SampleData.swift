@@ -17,6 +17,10 @@ class SampleData {
     var context: ModelContext {
         modelContainer.mainContext
     }
+    
+    var item: Item {
+        Item.sampleData.first!
+    }
 
     private init() {
         let schema = Schema([
