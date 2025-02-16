@@ -14,71 +14,102 @@ struct ContentView: View {
     @State private var isAddFormPresented = false
     @State private var isAllDeleteDialogPresented = false
 
+    private var totalPrice: Int {
+        items.reduce(0) { sum, item in
+            if let price = item.price {
+                return sum + (item.amount * price)
+            }
+            return sum
+        }
+    }
+
     var body: some View {
         NavigationView {
             ZStack {
-                List {
-                    ForEach(items) { item in
-                        NavigationLink(destination: EditItemForm(item: item)) {
-                            HStack {
-                                Text(item.name)
-                                    .frame(
-                                        maxWidth: .infinity, alignment: .leading
-                                    )
-
-                                Text(String(item.amount))
-                                    .frame(width: 30, alignment: .trailing)
-
-                                if let price = item.price {
-                                    Text(
-                                        "\(price, format: .currency(code: "JPY"))"
-                                    )
-                                    .frame(width: 100, alignment: .trailing)
-                                } else {
-                                    Text("-")
-                                        .frame(width: 100, alignment: .trailing)
-                                }
-                            }
-                        }
-                    }
-                    .onDelete(perform: deleteItems(indexes:))
-                }
+                Color(.systemGroupedBackground)
+                    .edgesIgnoringSafeArea(.all)
 
                 VStack {
-                    Spacer()
+                    Text("合計金額: \(totalPrice, format: .currency(code: "JPY"))")
+                        .font(.title2)
+                        .fontWeight(.bold)
+                        .padding(.top, 20)
 
-                    HStack {
-                        Button(action: {
-                            isAllDeleteDialogPresented = true
-                        }) {
-                            Image(systemName: "trash")
-                        }
-                        .dangerCircleButton(size: .xlarge)
-                        .confirmationDialog(
-                            "全商品の削除", isPresented: $isAllDeleteDialogPresented, titleVisibility: .visible
-                        ) {
-                            Button("削除", role: .destructive) {
-                                deleteAllItems()
+                    ZStack {
+                        List {
+                            ForEach(items) { item in
+                                NavigationLink(
+                                    destination: EditItemForm(item: item)
+                                ) {
+                                    HStack {
+                                        Text(item.name)
+                                            .frame(
+                                                maxWidth: .infinity,
+                                                alignment: .leading)
+
+                                        Text(String(item.amount))
+                                            .frame(
+                                                width: 30, alignment: .trailing)
+
+                                        if let price = item.price {
+                                            Text(
+                                                "\(price, format: .currency(code: "JPY"))"
+                                            )
+                                            .frame(
+                                                width: 100, alignment: .trailing
+                                            )
+                                        } else {
+                                            Text("-")
+                                                .frame(
+                                                    width: 100,
+                                                    alignment: .trailing)
+                                        }
+                                    }
+                                }
                             }
-                            Button("キャンセル", role: .cancel) {
-                                isAllDeleteDialogPresented = false
+                            .onDelete(perform: deleteItems(indexes:))
+                        }
+                        .scrollContentBackground(.hidden)
+                        .safeAreaInset(edge: .bottom) {
+                            Color.clear.frame(height: 80)
+                        }
+
+                        VStack {
+                            Spacer()
+                            HStack {
+                                Button(action: {
+                                    isAllDeleteDialogPresented = true
+                                }) {
+                                    Image(systemName: "trash")
+                                }
+                                .dangerCircleButton(size: .xlarge)
+                                .confirmationDialog(
+                                    "全商品の削除",
+                                    isPresented: $isAllDeleteDialogPresented,
+                                    titleVisibility: .visible
+                                ) {
+                                    Button("削除", role: .destructive) {
+                                        deleteAllItems()
+                                    }
+                                    Button("キャンセル", role: .cancel) {
+                                        isAllDeleteDialogPresented = false
+                                    }
+                                } message: {
+                                    Text("リスト内の全ての商品が削除されます。削除したデータは戻りません。")
+                                }
+
+                                Spacer()
+
+                                Button(action: {
+                                    isAddFormPresented.toggle()
+                                }) {
+                                    Image(systemName: "plus")
+                                }
+                                .primaryCircleButton(size: .xlarge)
                             }
-                        } message: {
-                            Text("リスト内の全ての商品が削除されます。削除したデータは戻りません。")
+                            .padding(.bottom, 20)
                         }
-
-                        Spacer()
-
-                        Button(action: {
-                            isAddFormPresented.toggle()
-                        }) {
-                            Image(systemName: "plus")
-                        }
-                        .primaryCircleButton(size: .xlarge)
                     }
-                    .background(.clear)
-                    .padding(.horizontal, 20)
-                    .padding(.bottom, 20)
                 }
             }
         }
