@@ -14,41 +14,37 @@ struct ScannerView: View {
 
     @State private var isScanning: Bool = false
     @State private var isShowAlert: Bool = false
-    @State private var isLoading: Bool = false
     @State private var name: String = ""
     @State private var amount: String = ""
     @State private var price: String = ""
+    @State private var currentStep: ScanStep = .nameStep
+    @State private var isHighlighted: Bool = false
 
     var body: some View {
         VStack {
+            Text(stepMessage)
+                .foregroundColor(isHighlighted ? .yellow : .primary)
+                .animation(.easeInOut(duration: 0.5), value: isHighlighted)
+
             DataScanner(
                 isScanning: $isScanning,
                 isShowAlert: $isShowAlert,
-                isLoading: $isLoading,
                 name: $name,
-                price: $price
+                price: $price,
+                currentStep: $currentStep
             )
-
-            if isLoading {
-                ProgressView("読み込み中...")
-                    .progressViewStyle(CircularProgressViewStyle())
-                    .padding()
-            }
 
             Form {
                 RepresentableTextField(
                     text: $name, placeholder: "商品"
                 )
-                .padding(.vertical)
                 RepresentableTextField(
                     text: $amount, placeholder: "個数", keyboardType: .numberPad
                 )
-                .padding(.vertical)
                 RepresentableTextField(
                     text: $price, placeholder: "Price (optional)",
                     keyboardType: .decimalPad
                 )
-                .padding(.vertical)
                 Button("保存") {
                     saveItem()
                     resetForm()
@@ -59,6 +55,12 @@ struct ScannerView: View {
         }
         .task {
             isScanning.toggle()
+        }
+        .onAppear {
+            highlightStepMessage()
+        }
+        .onChange(of: currentStep) {
+            highlightStepMessage()
         }
     }
 
@@ -71,6 +73,24 @@ struct ScannerView: View {
         name = ""
         amount = ""
         price = ""
+    }
+    
+    private var stepMessage: String {
+        switch currentStep {
+        case .nameStep:
+            return "商品名をタップしてください"
+        case .priceStep:
+            return "税込の値段をタップしてください"
+        case .completed:
+            return "入力内容を確認し、保存してください"
+        }
+    }
+
+    private func highlightStepMessage() {
+        isHighlighted = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            isHighlighted = false
+        }
     }
 }
 
