@@ -10,7 +10,7 @@ import SwiftUI
 
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
-    @Query private var items: [Item]
+    @Query(sort: \Item.createdAt, order: .reverse) private var items: [Item]
     @State private var isAddFormPresented = false
     @State private var isAllDeleteDialogPresented = false
 
