@@ -12,9 +12,9 @@ import SwiftData
 final class Item {
     var name: String
     var amount: Int
-    var price: Int?
+    var price: Float?
 
-    init(name: String, amount: Int, price: Int? = nil) {
+    init(name: String, amount: Int, price: Float? = nil) {
         self.name = name
         self.amount = amount
         self.price = price
@@ -35,5 +35,6 @@ final class Item {
         Item(name: "聲の形", amount: 30000, price: 1000),
         Item(name: "All You Need Is Kill", amount: 3, price: 10000),
         Item(name: "﷽﷽﷽", amount: 3, price: 10000),
+        Item(name: "小数点の値段", amount: 3, price: 100.11)
     ]
 }

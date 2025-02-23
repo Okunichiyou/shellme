@@ -30,8 +30,8 @@ struct EditItemForm: View {
             .padding(.vertical)
             RepresentableTextField(
                 text: Binding(
-                    get: { item.price.map(String.init) ?? "" },
-                    set: { item.price = Int($0) }
+                    get: { item.price.map { String($0) } ?? "" },
+                    set: { item.price = Float($0) }
                 ),
                 placeholder: "Price (optional)",
                 keyboardType: .numberPad
