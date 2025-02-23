@@ -80,7 +80,7 @@ struct ContentView: View {
                                 NavigationLink(destination: ScannerView()) {
                                     Image(systemName: "camera")
                                 }
-                                .dangerCircleButton(size: .xlarge)
+                                .secondaryCircleButton(size: .xlarge)
 
                                 Spacer()
 

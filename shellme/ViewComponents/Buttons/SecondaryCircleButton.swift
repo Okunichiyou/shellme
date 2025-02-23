@@ -1,5 +1,5 @@
 //
-//  DangerCircleButton.swift
+//  SecondaryButton.swift
 //  shellme
 //
 //  Created by 斉藤祐大 on 2025/02/02.
@@ -8,31 +8,31 @@
 import SwiftUI
 
 extension View {
-    public func dangerCircleButton(
+    public func secondaryCircleButton(
         size: ButtonSize
     ) -> some View {
         return modifier(
-            DangerCircleButtonStyleModifier(size: size))
+            SecondaryButtonStyleModifier(size: size))
     }
 }
 
-private struct DangerCircleButtonStyleModifier: ViewModifier {
+private struct SecondaryButtonStyleModifier: ViewModifier {
     @Environment(\.isEnabled) var isEnabled
     let size: ButtonSize
 
     func body(content: Content) -> some View {
         content.buttonStyle(
-            DangerCircleButtonStyle(
+            SecondaryButtonStyle(
                 isEnabled: isEnabled, size: size))
     }
 }
 
-private struct DangerCircleButtonStyle: ButtonStyle {
+private struct SecondaryButtonStyle: ButtonStyle {
     let isEnabled: Bool
     let size: ButtonSize
 
     func makeBody(configuration: Self.Configuration) -> some View {
-        DangerCircleButtonStyleView(
+        SecondaryButtonStyleView(
             label: configuration.label,
             isPressed: configuration.isPressed,
             isEnabled: isEnabled,
@@ -41,12 +41,13 @@ private struct DangerCircleButtonStyle: ButtonStyle {
     }
 }
 
-private struct DangerCircleButtonStyleView: View {
+private struct SecondaryButtonStyleView: View {
     let label: ButtonStyleConfiguration.Label
     let isPressed: Bool
     let isEnabled: Bool
     let size: ButtonSize
-    private let color: Color = Color.red
+    private let color: Color = Color.pink
+    private let secondaryBackgroundColor: Color = Color(.systemGroupedBackground)
 
     @ScaledMetric var fontSize: CGFloat
 
@@ -69,8 +70,11 @@ private struct DangerCircleButtonStyleView: View {
         label
             .font(.system(size: fontSize, weight: .bold))
             .foregroundStyle(color)
-            .frame(width: size.padding.leading * 2, height: size.padding.top + size.padding.bottom)
             .padding(size.padding)
+            .background(
+                Circle()
+                    .fill(secondaryBackgroundColor)
+            )
             .overlay(
                 Circle()
                     .strokeBorder(color, lineWidth: size.borderWidth)
@@ -83,6 +87,7 @@ private struct DangerCircleButtonStyleView: View {
                 Circle()
                     .fill(Color.white.opacity(isEnabled ? 0.0 : 0.6))
             )
+            .contentShape(Circle()) // 当たり判定を丸に限定
     }
 }
 
@@ -104,7 +109,7 @@ private struct DangerCircleButtonStyleView: View {
                 }) {
                     Image(systemName: "trash")
                 }
-                .dangerCircleButton(size: buttonSize.size)
+                .secondaryCircleButton(size: buttonSize.size)
                 .frame(maxWidth: .infinity, alignment: .center)
             }
         }
@@ -118,7 +123,7 @@ private struct DangerCircleButtonStyleView: View {
                 }) {
                     Image(systemName: "trash")
                 }
-                .dangerCircleButton(size: buttonSize.size)
+                .secondaryCircleButton(size: buttonSize.size)
                 .disabled(true)
                 .frame(maxWidth: .infinity, alignment: .center)
             }
