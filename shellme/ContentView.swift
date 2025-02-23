@@ -77,26 +77,10 @@ struct ContentView: View {
                         VStack {
                             Spacer()
                             HStack {
-                                Button(action: {
-                                    isAllDeleteDialogPresented = true
-                                }) {
-                                    Image(systemName: "trash")
+                                NavigationLink(destination: ScannerView()) {
+                                    Image(systemName: "camera")
                                 }
                                 .dangerCircleButton(size: .xlarge)
-                                .confirmationDialog(
-                                    "全商品の削除",
-                                    isPresented: $isAllDeleteDialogPresented,
-                                    titleVisibility: .visible
-                                ) {
-                                    Button("削除", role: .destructive) {
-                                        deleteAllItems()
-                                    }
-                                    Button("キャンセル", role: .cancel) {
-                                        isAllDeleteDialogPresented = false
-                                    }
-                                } message: {
-                                    Text("リスト内の全ての商品が削除されます。削除したデータは戻りません。")
-                                }
 
                                 Spacer()
 
@@ -111,6 +95,24 @@ struct ContentView: View {
                         }
                     }
                 }
+            }
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(role: .destructive) {
+                        isAllDeleteDialogPresented = true
+                    } label: {
+                        Image(systemName: "trash")
+                            .foregroundColor(.red)
+                    }
+                }
+            }
+            .alert("すべてのアイテムを削除しますか？", isPresented: $isAllDeleteDialogPresented) {
+                Button("キャンセル", role: .cancel) {}
+                Button("削除", role: .destructive) {
+                    deleteAllItems()
+                }
+            } message: {
+                Text("この操作は元に戻せません。")
             }
         }
         .sheet(isPresented: $isAddFormPresented) {
