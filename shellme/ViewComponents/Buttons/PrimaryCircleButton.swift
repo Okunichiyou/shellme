@@ -66,9 +66,11 @@ private struct PrimaryCircleButtonStyleView: View {
         label
             .font(.system(size: fontSize, weight: .bold))
             .foregroundStyle(iconColor)
-            .frame(width: size.padding.leading * 2, height: size.padding.top + size.padding.bottom)
             .padding(size.padding)
-            .background(primaryBackgroundColor)
+            .background(
+                Circle()
+                    .fill(primaryBackgroundColor)
+            )
             .overlay(
                 Circle()
                     .fill(Color.white.opacity(isPressed ? 0.3 : 0.0))
@@ -77,7 +79,7 @@ private struct PrimaryCircleButtonStyleView: View {
                 Circle()
                     .fill(Color.white.opacity(isEnabled ? 0.0 : 0.6))
             )
-            .clipShape(Circle())
+            .contentShape(Circle()) // 当たり判定を丸に限定
     }
 }
 
