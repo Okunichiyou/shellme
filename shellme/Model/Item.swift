@@ -13,11 +13,13 @@ final class Item {
     var name: String
     var amount: Int
     var price: Float?
+    var createdAt: Date
 
     init(name: String, amount: Int, price: Float? = nil) {
         self.name = name
         self.amount = amount
         self.price = price
+        self.createdAt = Date()
     }
 
     @MainActor
