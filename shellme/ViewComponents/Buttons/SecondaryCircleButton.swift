@@ -1,5 +1,5 @@
 //
-//  SecondaryButton.swift
+//  SecondaryCircleButton.swift
 //  shellme
 //
 //  Created by 斉藤祐大 on 2025/02/02.
@@ -12,27 +12,27 @@ extension View {
         size: ButtonSize
     ) -> some View {
         return modifier(
-            SecondaryButtonStyleModifier(size: size))
+            SecondaryCircleButtonStyleModifier(size: size))
     }
 }
 
-private struct SecondaryButtonStyleModifier: ViewModifier {
+private struct SecondaryCircleButtonStyleModifier: ViewModifier {
     @Environment(\.isEnabled) var isEnabled
     let size: ButtonSize
 
     func body(content: Content) -> some View {
         content.buttonStyle(
-            SecondaryButtonStyle(
+            SecondaryCircleButtonStyle(
                 isEnabled: isEnabled, size: size))
     }
 }
 
-private struct SecondaryButtonStyle: ButtonStyle {
+private struct SecondaryCircleButtonStyle: ButtonStyle {
     let isEnabled: Bool
     let size: ButtonSize
 
     func makeBody(configuration: Self.Configuration) -> some View {
-        SecondaryButtonStyleView(
+        SecondaryCircleButtonStyleView(
             label: configuration.label,
             isPressed: configuration.isPressed,
             isEnabled: isEnabled,
@@ -41,7 +41,7 @@ private struct SecondaryButtonStyle: ButtonStyle {
     }
 }
 
-private struct SecondaryButtonStyleView: View {
+private struct SecondaryCircleButtonStyleView: View {
     let label: ButtonStyleConfiguration.Label
     let isPressed: Bool
     let isEnabled: Bool
