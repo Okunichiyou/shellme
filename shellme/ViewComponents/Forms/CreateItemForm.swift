@@ -30,7 +30,7 @@ struct CreateItemForm: View {
             .padding(.vertical)
             RepresentableTextField(
                 text: $price, placeholder: "Price (optional)",
-                keyboardType: .numberPad
+                keyboardType: .decimalPad
             )
             .padding(.vertical)
             Button("保存") {
@@ -43,7 +43,7 @@ struct CreateItemForm: View {
     }
 
     private func saveItem() {
-        let item = Item(name: name, amount: Int(amount) ?? 1, price: Int(price))
+        let item = Item(name: name, amount: Int(amount) ?? 1, price: Float(price))
         modelContext.insert(item)
     }
 
