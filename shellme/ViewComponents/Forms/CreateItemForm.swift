@@ -22,24 +22,21 @@ struct CreateItemForm: View {
             RepresentableTextField(
                 text: $name, placeholder: "商品", isFirstResponder: true
             )
-            .padding(.vertical)
             .focused(self.$focus)
             RepresentableTextField(
                 text: $amount, placeholder: "個数", keyboardType: .numberPad
             )
-            .padding(.vertical)
             RepresentableTextField(
                 text: $price, placeholder: "Price (optional)",
                 keyboardType: .decimalPad
             )
-            .padding(.vertical)
             Button("保存") {
                 saveItem()
                 resetForm()
             }
             .frame(maxWidth: .infinity)
         }
-        .presentationDetents([.fraction(0.45)])
+        .presentationDetents([.fraction(0.25)])
     }
 
     private func saveItem() {
