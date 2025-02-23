@@ -15,14 +15,14 @@ struct ContentView: View {
     @State private var isAllDeleteDialogPresented = false
 
     private var totalPrice: Int {
-        items.reduce(0) { sum, item in
+        let total: Float = items.reduce(0) { sum, item in
             if let price = item.price {
-                return sum + (item.amount * price)
+                return sum + (Float(item.amount) * price)
             }
             return sum
         }
+        return Int(total)
     }
-
     var body: some View {
         NavigationView {
             ZStack {
