@@ -12,15 +12,15 @@ import VisionKit
 struct DataScanner: UIViewControllerRepresentable {
     @Binding var isScanning: Bool
     @Binding var isShowAlert: Bool
-    @Binding var isLoading: Bool
     @Binding var name: String
     @Binding var price: String
+    @Binding var currentStep: ScanStep
 
     func makeUIViewController(context: Context) -> DataScannerViewController {
         let controller = DataScannerViewController(
             recognizedDataTypes: [.text()],
             qualityLevel: .accurate,
-            recognizesMultipleItems: false,
+            recognizesMultipleItems: true,
             isPinchToZoomEnabled: true,
             isHighlightingEnabled: true)
 
@@ -61,8 +61,18 @@ struct DataScanner: UIViewControllerRepresentable {
             didTapOn item: RecognizedItem
         ) {
             if case .text(let text) = item {
-                self.parent.isLoading = true
-                sendTextToAPI(text.transcript)
+                switch parent.currentStep {
+                case .nameStep:
+                    parent.name = text.transcript
+                    parent.currentStep = .priceStep
+                case .priceStep:
+                    let extractedPrice = extractTaxIncludedPrice(text.transcript)
+                    parent.price = extractedPrice
+                    parent.isScanning = false
+                    parent.currentStep = .completed
+                case .completed:
+                    break
+                }
             }
 
         }
@@ -84,57 +94,25 @@ struct DataScanner: UIViewControllerRepresentable {
                 print(error.localizedDescription)
             }
         }
+        
+        private func extractTaxIncludedPrice(_ text: String) -> String {
+            let patterns = [
+                #"税込[^\d]*(\d+[,.]?\d*)"#,
+                #"総額[^\d]*(\d+[,.]?\d*)"#,
+                #"内税[^\d]*(\d+[,.]?\d*)"#,
+                #"[^\d]*(\d+[,.]?\d*)"# // 税込表記がない場合でも数字をタップしていた場合は入力されるようにしておく
+            ]
 
-        private func sendTextToAPI(_ text: String) {
-            guard
-                let url = URL(
-                    string:
-                        "https://shellme-backend.seifuzi2064.workers.dev/api/parse-price-tag"
-                )
-            else {
-                return
-            }
-
-            var request = URLRequest(url: url)
-            request.httpMethod = "POST"
-            request.setValue(
-                "application/json", forHTTPHeaderField: "Content-Type")
-
-            let requestBody: [String: Any] = ["text": text]
-            request.httpBody = try? JSONSerialization.data(
-                withJSONObject: requestBody)
-
-            let task = URLSession.shared.dataTask(with: request) {
-                data, response, error in
-                guard let data = data, error == nil else {
-                    print(
-                        "Request failed: \(error?.localizedDescription ?? "Unknown error")"
-                    )
-                    return
-                }
-
-                do {
-                    let jsonResponse =
-                        try JSONSerialization.jsonObject(
-                            with: data, options: []) as? [String: Any]
-                    if let name = jsonResponse?["name"] as? String,
-                        let price = jsonResponse?["price"] as? NSNumber
-                    {
-
-                        DispatchQueue.main.async {
-                            self.parent.name = name
-                            self.parent.price = price.stringValue
-                            self.parent.isLoading = false
-                        }
-                    }
-                } catch {
-                    print("JSON decoding failed: \(error.localizedDescription)")
-                    DispatchQueue.main.async {
-                        self.parent.isLoading = false
+            for pattern in patterns {
+                if let match = text.range(of: pattern, options: .regularExpression) {
+                    let matchedText = String(text[match])
+                    if let numberMatch = matchedText.range(of: #"\d+[,.]?\d*"#, options: .regularExpression) {
+                        return String(matchedText[numberMatch])
                     }
                 }
             }
-            task.resume()
+
+            return text // 見つからなかった場合は元のテキストを返す
         }
     }
 }
