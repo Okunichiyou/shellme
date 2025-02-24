@@ -42,7 +42,7 @@ struct CreateItemForm: View {
                     Text("個数").font(.caption).foregroundStyle(.gray)
                     Text("*").foregroundColor(.red)
                 }
-                
+
                 if let amountError {
                     Text(amountError).font(.caption).foregroundColor(.red)
                 }
@@ -112,8 +112,7 @@ struct CreateItemForm: View {
     }
 
     private func saveItem() {
-        let item = Item(
-            name: name, amount: Int(amount) ?? 1, price: Float(price))
+        let item = Item(name: name, amount: Int(amount)!, price: Float(price))
         modelContext.insert(item)
     }
 

@@ -59,7 +59,7 @@ struct ScannerView: View {
                         Text("個数").font(.caption).foregroundStyle(.gray)
                         Text("*").foregroundColor(.red)
                     }
-                    
+
                     if let amountError {
                         Text(amountError).font(.caption).foregroundColor(.red)
                     }
@@ -96,7 +96,7 @@ struct ScannerView: View {
             highlightStepMessage()
         }
     }
-    
+
     private func validateAndSave() {
         let nameHasError = validateName()
         let amountHasError = validateAmount()
@@ -139,8 +139,7 @@ struct ScannerView: View {
     }
 
     private func saveItem() {
-        let item = Item(
-            name: name, amount: Int(amount) ?? 1, price: Float(price))
+        let item = Item(name: name, amount: Int(amount)!, price: Float(price))
         modelContext.insert(item)
     }
 
