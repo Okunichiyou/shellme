@@ -21,6 +21,9 @@ struct CreateItemForm: View {
     @FocusState var focus: Bool
 
     var body: some View {
+        TotalPrice()
+            .padding(.top, 20)
+
         Form {
             VStack(alignment: .leading) {
                 HStack {
@@ -71,7 +74,6 @@ struct CreateItemForm: View {
             }
             .frame(maxWidth: .infinity)
         }
-        .presentationDetents([.fraction(0.4)])
     }
 
     private func validateAndSave() {
