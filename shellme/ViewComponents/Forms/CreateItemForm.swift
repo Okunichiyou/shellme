@@ -14,14 +14,22 @@ struct CreateItemForm: View {
     @State private var name: String = ""
     @State private var amount: String = ""
     @State private var price: String = ""
+    @State private var nameError: String?
+
     @FocusState var focus: Bool
 
     var body: some View {
         Form {
             VStack(alignment: .leading) {
-                Text("商品名")
-                    .font(.caption)
-                    .foregroundStyle(.gray)
+                HStack {
+                    Text("商品名").font(.caption).foregroundStyle(.gray)
+                    Text("*").foregroundColor(.red)
+                }
+                if let nameError {
+                    Text(nameError)
+                        .font(.caption)
+                        .foregroundColor(.red)
+                }
                 RepresentableTextField(
                     text: $name, placeholder: "商品名", isFirstResponder: true
                 )
@@ -48,12 +56,26 @@ struct CreateItemForm: View {
             }
 
             Button("保存") {
-                saveItem()
-                resetForm()
+                validateAndSave()
             }
             .frame(maxWidth: .infinity)
         }
         .presentationDetents([.fraction(0.4)])
+    }
+
+    private func validateAndSave() {
+        let validator = ItemNameValidator(name: name)
+        let result = validator.validate()
+
+        switch result {
+        case .required(let message):
+            nameError = message
+            return
+        case .none:
+            nameError = nil
+            saveItem()
+            resetForm()
+        }
     }
 
     private func saveItem() {
