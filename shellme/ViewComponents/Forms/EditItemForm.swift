@@ -128,7 +128,7 @@ struct EditItemForm: View {
 
     private func saveChanges() {
         item.name = name
-        item.amount = Int(amount) ?? 0
+        item.amount = Int(amount)!
         item.price = Float(price) ?? nil
     }
 }
