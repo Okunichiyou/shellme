@@ -10,57 +10,125 @@ import SwiftUI
 struct EditItemForm: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
-    @Bindable var item: Item
+
+    var item: Item
     @FocusState var focus: Bool
+
+    @State private var name: String
+    @State private var amount: String
+    @State private var price: String
+    @State private var nameError: String?
+    @State private var amountError: String?
+    @State private var priceError: String?
+
+    init(item: Item) {
+        self.item = item
+        _name = State(initialValue: item.name)
+        _amount = State(initialValue: String(item.amount))
+        _price = State(initialValue: item.price.map { String($0) } ?? "")
+    }
 
     var body: some View {
         Form {
             VStack(alignment: .leading) {
-                Text("商品名")
-                    .font(.caption)
-                    .foregroundStyle(.gray)
+                HStack {
+                    Text("商品名").font(.caption).foregroundStyle(.gray)
+                    Text("*").foregroundColor(.red)
+                }
+
+                if let nameError {
+                    Text(nameError)
+                        .font(.caption)
+                        .foregroundColor(.red)
+                }
 
                 RepresentableTextField(
-                    text: $item.name, placeholder: "商品"
+                    text: $name,
+                    placeholder: "商品名"
                 )
+                .focused(self.$focus)
             }
 
             VStack(alignment: .leading) {
-                Text("個数")
-                    .font(.caption)
-                    .foregroundStyle(.gray)
+                HStack {
+                    Text("個数").font(.caption).foregroundStyle(.gray)
+                    Text("*").foregroundColor(.red)
+                }
+                
+                if let amountError {
+                    Text(amountError).font(.caption).foregroundColor(.red)
+                }
 
                 RepresentableTextField(
-                    text: Binding(
-                        get: { String(item.amount) },
-                        set: { item.amount = Int($0) ?? 0 }
-                    ),
+                    text: $amount,
                     placeholder: "個数",
                     keyboardType: .numberPad
                 )
             }
 
             VStack(alignment: .leading) {
-                Text("値段")
-                    .font(.caption)
-                    .foregroundStyle(.gray)
+                Text("値段").font(.caption).foregroundStyle(.gray)
+
+                if let priceError {
+                    Text(priceError).font(.caption).foregroundColor(.red)
+                }
 
                 RepresentableTextField(
-                    text: Binding(
-                        get: { item.price.map { String($0) } ?? "" },
-                        set: { item.price = Float($0) }
-                    ),
+                    text: $price,
                     placeholder: "値段",
                     keyboardType: .decimalPad
                 )
             }
 
             Button("保存") {
-                dismiss()
+                validateAndSave()
             }
             .frame(maxWidth: .infinity)
         }
         .presentationDetents([.fraction(0.45)])
+    }
+    
+    private func validateAndSave() {
+        let nameHasError = validateName()
+        let amountHasError = validateAmount()
+        let priceHasError = validateAmount()
+
+        if nameHasError || amountHasError || priceHasError {
+            return
+        }
+
+        saveChanges()
+        dismiss()
+    }
+
+    private func validateName() -> Bool {
+        let nameValidator = ItemNameValidator(name: name)
+        let nameResult = nameValidator.validate()
+
+        nameError = nameResult.errorMessage
+        return nameResult.isNg
+    }
+
+    private func validateAmount() -> Bool {
+        let amountValidator = ItemAmountValidator(amount: amount)
+        let amountResult = amountValidator.validate()
+
+        amountError = amountResult.errorMessage
+        return amountResult.isNg
+    }
+
+    private func validatePrice() -> Bool {
+        let priceValidator = ItemPriceValidator(price: price)
+        let priceResult = priceValidator.validate()
+        
+        priceError = priceResult.errorMessage
+        return priceResult.isNg
+    }
+
+    private func saveChanges() {
+        item.name = name
+        item.amount = Int(amount)!
+        item.price = Float(price) ?? nil
     }
 }
 

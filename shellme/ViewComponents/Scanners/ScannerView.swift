@@ -19,6 +19,9 @@ struct ScannerView: View {
     @State private var price: String = ""
     @State private var currentStep: ScanStep = .nameStep
     @State private var isHighlighted: Bool = false
+    @State private var nameError: String?
+    @State private var amountError: String?
+    @State private var priceError: String?
 
     var body: some View {
         VStack {
@@ -36,9 +39,16 @@ struct ScannerView: View {
 
             Form {
                 VStack(alignment: .leading) {
-                    Text("商品名")
-                        .font(.caption)
-                        .foregroundStyle(.gray)
+                    HStack {
+                        Text("商品名").font(.caption).foregroundStyle(.gray)
+                        Text("*").foregroundColor(.red)
+                    }
+
+                    if let nameError {
+                        Text(nameError)
+                            .font(.caption)
+                            .foregroundColor(.red)
+                    }
 
                     RepresentableTextField(
                         text: $name, placeholder: "商品"
@@ -46,28 +56,36 @@ struct ScannerView: View {
                 }
 
                 VStack(alignment: .leading) {
-                    Text("個数")
-                        .font(.caption)
-                        .foregroundStyle(.gray)
+                    HStack {
+                        Text("個数").font(.caption).foregroundStyle(.gray)
+                        Text("*").foregroundColor(.red)
+                    }
+
+                    if let amountError {
+                        Text(amountError).font(.caption).foregroundColor(.red)
+                    }
+
                     RepresentableTextField(
                         text: $amount, placeholder: "個数",
                         keyboardType: .numberPad
                     )
                 }
-                
+
                 VStack(alignment: .leading) {
-                    Text("値段")
-                        .font(.caption)
-                        .foregroundStyle(.gray)
+                    Text("値段").font(.caption).foregroundStyle(.gray)
+
+                    if let priceError {
+                        Text(priceError).font(.caption).foregroundColor(.red)
+                    }
+
                     RepresentableTextField(
                         text: $price, placeholder: "値段",
                         keyboardType: .decimalPad
                     )
                 }
+
                 Button("保存") {
-                    saveItem()
-                    resetForm()
-                    dismiss()
+                    validateAndSave()
                 }
                 .frame(maxWidth: .infinity)
             }
@@ -83,16 +101,46 @@ struct ScannerView: View {
         }
     }
 
-    private func saveItem() {
-        let item = Item(
-            name: name, amount: Int(amount) ?? 1, price: Float(price))
-        modelContext.insert(item)
+    private func validateAndSave() {
+        let nameHasError = validateName()
+        let amountHasError = validateAmount()
+        let priceHasError = validatePrice()
+
+        if nameHasError || amountHasError || priceHasError {
+            return
+        }
+
+        saveItem()
+        dismiss()
     }
 
-    private func resetForm() {
-        name = ""
-        amount = ""
-        price = ""
+    private func validateName() -> Bool {
+        let nameValidator = ItemNameValidator(name: name)
+        let nameResult = nameValidator.validate()
+
+        nameError = nameResult.errorMessage
+        return nameResult.isNg
+    }
+
+    private func validateAmount() -> Bool {
+        let amountValidator = ItemAmountValidator(amount: amount)
+        let amountResult = amountValidator.validate()
+
+        amountError = amountResult.errorMessage
+        return amountResult.isNg
+    }
+
+    private func validatePrice() -> Bool {
+        let priceValidator = ItemPriceValidator(price: price)
+        let priceResult = priceValidator.validate()
+        
+        priceError = priceResult.errorMessage
+        return priceResult.isNg
+    }
+
+    private func saveItem() {
+        let item = Item(name: name, amount: Int(amount)!, price: Float(price))
+        modelContext.insert(item)
     }
 
     private var stepMessage: String {
