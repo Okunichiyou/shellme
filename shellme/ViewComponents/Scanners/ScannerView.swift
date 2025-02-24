@@ -19,6 +19,7 @@ struct ScannerView: View {
     @State private var price: String = ""
     @State private var currentStep: ScanStep = .nameStep
     @State private var isHighlighted: Bool = false
+    @State private var nameError: String?
 
     var body: some View {
         VStack {
@@ -40,6 +41,12 @@ struct ScannerView: View {
                         .font(.caption)
                         .foregroundStyle(.gray)
 
+                    if let nameError {
+                        Text(nameError)
+                            .font(.caption)
+                            .foregroundColor(.red)
+                    }
+
                     RepresentableTextField(
                         text: $name, placeholder: "商品"
                     )
@@ -54,7 +61,7 @@ struct ScannerView: View {
                         keyboardType: .numberPad
                     )
                 }
-                
+
                 VStack(alignment: .leading) {
                     Text("値段")
                         .font(.caption)
@@ -64,10 +71,9 @@ struct ScannerView: View {
                         keyboardType: .decimalPad
                     )
                 }
+
                 Button("保存") {
-                    saveItem()
-                    resetForm()
-                    dismiss()
+                    validateAndSave()
                 }
                 .frame(maxWidth: .infinity)
             }
@@ -83,16 +89,25 @@ struct ScannerView: View {
         }
     }
 
+    private func validateAndSave() {
+        let validator = ItemNameValidator(name: name)
+        let result = validator.validate()
+
+        switch result {
+        case .required(let message):
+            nameError = message
+            return
+        case .none:
+            nameError = nil
+            saveItem()
+            dismiss()
+        }
+    }
+
     private func saveItem() {
         let item = Item(
             name: name, amount: Int(amount) ?? 1, price: Float(price))
         modelContext.insert(item)
-    }
-
-    private func resetForm() {
-        name = ""
-        amount = ""
-        price = ""
     }
 
     private var stepMessage: String {
