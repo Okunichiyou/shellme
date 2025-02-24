@@ -35,16 +35,35 @@ struct ScannerView: View {
             )
 
             Form {
-                RepresentableTextField(
-                    text: $name, placeholder: "商品"
-                )
-                RepresentableTextField(
-                    text: $amount, placeholder: "個数", keyboardType: .numberPad
-                )
-                RepresentableTextField(
-                    text: $price, placeholder: "Price (optional)",
-                    keyboardType: .decimalPad
-                )
+                VStack(alignment: .leading) {
+                    Text("商品名")
+                        .font(.caption)
+                        .foregroundStyle(.gray)
+
+                    RepresentableTextField(
+                        text: $name, placeholder: "商品"
+                    )
+                }
+
+                VStack(alignment: .leading) {
+                    Text("個数")
+                        .font(.caption)
+                        .foregroundStyle(.gray)
+                    RepresentableTextField(
+                        text: $amount, placeholder: "個数",
+                        keyboardType: .numberPad
+                    )
+                }
+                
+                VStack(alignment: .leading) {
+                    Text("値段")
+                        .font(.caption)
+                        .foregroundStyle(.gray)
+                    RepresentableTextField(
+                        text: $price, placeholder: "値段",
+                        keyboardType: .decimalPad
+                    )
+                }
                 Button("保存") {
                     saveItem()
                     resetForm()
@@ -65,7 +84,8 @@ struct ScannerView: View {
     }
 
     private func saveItem() {
-        let item = Item(name: name, amount: Int(amount) ?? 1, price: Float(price))
+        let item = Item(
+            name: name, amount: Int(amount) ?? 1, price: Float(price))
         modelContext.insert(item)
     }
 
@@ -74,7 +94,7 @@ struct ScannerView: View {
         amount = ""
         price = ""
     }
-    
+
     private var stepMessage: String {
         switch currentStep {
         case .nameStep:
