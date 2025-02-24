@@ -37,9 +37,10 @@ struct ScannerView: View {
 
             Form {
                 VStack(alignment: .leading) {
-                    Text("商品名")
-                        .font(.caption)
-                        .foregroundStyle(.gray)
+                    HStack {
+                        Text("商品名").font(.caption).foregroundStyle(.gray)
+                        Text("*").foregroundColor(.red)
+                    }
 
                     if let nameError {
                         Text(nameError)
