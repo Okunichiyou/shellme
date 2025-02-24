@@ -18,16 +18,9 @@ extension Validator {
 
 protocol ValidationResult {
     var isOk: Bool { get }
+    var errorMessage: String? { get }
 }
 
 extension ValidationResult {
     var isNg: Bool { !isOk }
-}
-
-extension Array where Element == ValidationResult {
-    var isValidAll: Bool {
-        if contains(where: { $0.isNg }) { return false }
-        return true
-    }
-    var isInvalidAny: Bool { !isValidAll }
 }
