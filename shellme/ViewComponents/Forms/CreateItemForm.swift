@@ -91,43 +91,24 @@ struct CreateItemForm: View {
         let nameValidator = ItemNameValidator(name: name)
         let nameResult = nameValidator.validate()
 
-        switch nameResult {
-        case .required(let nameMessage):
-            nameError = nameMessage
-            return true
-        case .none:
-            nameError = nil
-            return false
-        }
+        nameError = nameResult.errorMessage
+        return nameResult.isNg
     }
 
     private func validateAmount() -> Bool {
         let amountValidator = ItemAmountValidator(amount: amount)
         let amountResult = amountValidator.validate()
 
-        switch amountResult {
-        case .required(let amountMessage), .isNotNumber(let amountMessage),
-            .isLessThanOne(let amountMessage):
-            amountError = amountMessage
-            return true
-        case .none:
-            amountError = nil
-            return false
-        }
+        amountError = amountResult.errorMessage
+        return amountResult.isNg
     }
 
     private func validatePrice() -> Bool {
         let priceValidator = ItemPriceValidator(price: price)
         let priceResult = priceValidator.validate()
-
-        switch priceResult {
-        case .isNotNumber(let priceMessage):
-            priceError = priceMessage
-            return true
-        case .none:
-            priceError = nil
-            return false
-        }
+        
+        priceError = priceResult.errorMessage
+        return priceResult.isNg
     }
 
     private func saveItem() {

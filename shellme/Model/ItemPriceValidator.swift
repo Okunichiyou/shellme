@@ -17,6 +17,14 @@ struct ItemPriceValidator: Validator {
         var isOk: Bool {
             if case .none = self { return true } else { return false }
         }
+
+        var errorMessage: String? {
+            switch self {
+            case .none: return nil
+            case .isNotNumber(let msg):
+                return msg
+            }
+        }
     }
 
     func validate() -> Result {
