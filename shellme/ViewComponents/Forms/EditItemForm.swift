@@ -19,6 +19,7 @@ struct EditItemForm: View {
     @State private var price: String
     @State private var nameError: String?
     @State private var amountError: String?
+    @State private var priceError: String?
 
     init(item: Item) {
         self.item = item
@@ -66,9 +67,11 @@ struct EditItemForm: View {
             }
 
             VStack(alignment: .leading) {
-                Text("値段")
-                    .font(.caption)
-                    .foregroundStyle(.gray)
+                Text("値段").font(.caption).foregroundStyle(.gray)
+
+                if let priceError {
+                    Text(priceError).font(.caption).foregroundColor(.red)
+                }
 
                 RepresentableTextField(
                     text: $price,
@@ -88,8 +91,9 @@ struct EditItemForm: View {
     private func validateAndSave() {
         let nameHasError = validateName()
         let amountHasError = validateAmount()
+        let priceHasError = validateAmount()
 
-        if nameHasError || amountHasError {
+        if nameHasError || amountHasError || priceHasError {
             return
         }
 
@@ -122,6 +126,20 @@ struct EditItemForm: View {
             return true
         case .none:
             amountError = nil
+            return false
+        }
+    }
+    
+    private func validatePrice() -> Bool {
+        let priceValidator = ItemPriceValidator(price: price)
+        let priceResult = priceValidator.validate()
+
+        switch priceResult {
+        case .isNotNumber(let priceMessage):
+            priceError = priceMessage
+            return true
+        case .none:
+            priceError = nil
             return false
         }
     }
