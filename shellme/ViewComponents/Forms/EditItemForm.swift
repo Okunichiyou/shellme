@@ -18,6 +18,7 @@ struct EditItemForm: View {
     @State private var amount: String
     @State private var price: String
     @State private var nameError: String?
+    @State private var amountError: String?
 
     init(item: Item) {
         self.item = item
@@ -47,9 +48,14 @@ struct EditItemForm: View {
             }
 
             VStack(alignment: .leading) {
-                Text("個数")
-                    .font(.caption)
-                    .foregroundStyle(.gray)
+                HStack {
+                    Text("個数").font(.caption).foregroundStyle(.gray)
+                    Text("*").foregroundColor(.red)
+                }
+                
+                if let amountError {
+                    Text(amountError).font(.caption).foregroundColor(.red)
+                }
 
                 RepresentableTextField(
                     text: $amount,
@@ -77,19 +83,45 @@ struct EditItemForm: View {
         }
         .presentationDetents([.fraction(0.45)])
     }
-
+    
     private func validateAndSave() {
-        let validator = ItemNameValidator(name: name)
-        let result = validator.validate()
+        let nameHasError = validateName()
+        let amountHasError = validateAmount()
 
-        switch result {
-        case .required(let message):
-            nameError = message
+        if nameHasError || amountHasError {
             return
+        }
+
+        saveChanges()
+        dismiss()
+    }
+
+    private func validateName() -> Bool {
+        let nameValidator = ItemNameValidator(name: name)
+        let nameResult = nameValidator.validate()
+
+        switch nameResult {
+        case .required(let nameMessage):
+            nameError = nameMessage
+            return true
         case .none:
             nameError = nil
-            saveChanges()
-            dismiss()
+            return false
+        }
+    }
+
+    private func validateAmount() -> Bool {
+        let amountValidator = ItemAmountValidator(amount: amount)
+        let amountResult = amountValidator.validate()
+
+        switch amountResult {
+        case .required(let amountMessage), .isNotNumber(let amountMessage),
+            .isLessThanOne(let amountMessage):
+            amountError = amountMessage
+            return true
+        case .none:
+            amountError = nil
+            return false
         }
     }
 
