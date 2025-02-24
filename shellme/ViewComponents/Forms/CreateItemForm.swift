@@ -5,7 +5,6 @@
 //  Created by 斉藤祐大 on 2025/02/02.
 //
 
-import SwiftData
 import SwiftUI
 
 struct CreateItemForm: View {
@@ -19,28 +18,47 @@ struct CreateItemForm: View {
 
     var body: some View {
         Form {
-            RepresentableTextField(
-                text: $name, placeholder: "商品", isFirstResponder: true
-            )
-            .focused(self.$focus)
-            RepresentableTextField(
-                text: $amount, placeholder: "個数", keyboardType: .numberPad
-            )
-            RepresentableTextField(
-                text: $price, placeholder: "Price (optional)",
-                keyboardType: .decimalPad
-            )
+            VStack(alignment: .leading) {
+                Text("商品名")
+                    .font(.caption)
+                    .foregroundStyle(.gray)
+                RepresentableTextField(
+                    text: $name, placeholder: "商品名", isFirstResponder: true
+                )
+                .focused(self.$focus)
+            }
+
+            VStack(alignment: .leading) {
+                Text("個数")
+                    .font(.caption)
+                    .foregroundStyle(.gray)
+                RepresentableTextField(
+                    text: $amount, placeholder: "個数", keyboardType: .numberPad
+                )
+            }
+
+            VStack(alignment: .leading) {
+                Text("値段")
+                    .font(.caption)
+                    .foregroundStyle(.gray)
+                RepresentableTextField(
+                    text: $price, placeholder: "値段",
+                    keyboardType: .decimalPad
+                )
+            }
+
             Button("保存") {
                 saveItem()
                 resetForm()
             }
             .frame(maxWidth: .infinity)
         }
-        .presentationDetents([.fraction(0.25)])
+        .presentationDetents([.fraction(0.4)])
     }
 
     private func saveItem() {
-        let item = Item(name: name, amount: Int(amount) ?? 1, price: Float(price))
+        let item = Item(
+            name: name, amount: Int(amount) ?? 1, price: Float(price))
         modelContext.insert(item)
     }
 
