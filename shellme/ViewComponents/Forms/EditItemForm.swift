@@ -9,7 +9,6 @@ import SwiftUI
 
 struct EditItemForm: View {
     @Environment(\.modelContext) private var modelContext
-    @Environment(\.dismiss) private var dismiss
 
     var item: Item
     @FocusState var focus: Bool
@@ -29,6 +28,9 @@ struct EditItemForm: View {
     }
 
     var body: some View {
+        TotalPrice()
+            .padding(.top, 20)
+
         Form {
             VStack(alignment: .leading) {
                 HStack {
@@ -98,7 +100,6 @@ struct EditItemForm: View {
         }
 
         saveChanges()
-        dismiss()
     }
 
     private func validateName() -> Bool {

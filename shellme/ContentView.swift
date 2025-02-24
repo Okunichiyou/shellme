@@ -14,15 +14,6 @@ struct ContentView: View {
     @State private var isAddFormPresented = false
     @State private var isAllDeleteDialogPresented = false
 
-    private var totalPrice: Int {
-        let total: Float = items.reduce(0) { sum, item in
-            if let price = item.price {
-                return sum + (Float(item.amount) * price)
-            }
-            return sum
-        }
-        return Int(total)
-    }
     var body: some View {
         NavigationView {
             ZStack {
@@ -30,10 +21,7 @@ struct ContentView: View {
                     .edgesIgnoringSafeArea(.all)
 
                 VStack {
-                    Text("合計金額: \(totalPrice, format: .currency(code: "JPY"))")
-                        .font(.title2)
-                        .fontWeight(.bold)
-                        .padding(.top, 20)
+                    TotalPrice()
 
                     ZStack {
                         List {
