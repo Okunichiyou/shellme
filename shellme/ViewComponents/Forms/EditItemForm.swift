@@ -9,6 +9,7 @@ import SwiftUI
 
 struct EditItemForm: View {
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.dismiss) private var dismiss
 
     var item: Item
     @FocusState var focus: Bool
@@ -56,7 +57,7 @@ struct EditItemForm: View {
                     Text("個数").font(.caption).foregroundStyle(.gray)
                     Text("*").foregroundColor(.red)
                 }
-                
+
                 if let amountError {
                     Text(amountError).font(.caption).foregroundColor(.red)
                 }
@@ -82,14 +83,21 @@ struct EditItemForm: View {
                 )
             }
 
-            Button("保存") {
-                validateAndSave()
+            HStack {
+                Button("キャンセル") {
+                    dismiss()
+                }
+                .buttonStyle(TertiaryButtonStyle(size: .medium))
+
+                Button("保存") {
+                    validateAndSave()
+                }
+                .buttonStyle(PrimaryButtonStyle(size: .medium))
             }
-            .frame(maxWidth: .infinity)
         }
         .presentationDetents([.fraction(0.45)])
     }
-    
+
     private func validateAndSave() {
         let nameHasError = validateName()
         let amountHasError = validateAmount()
@@ -121,7 +129,7 @@ struct EditItemForm: View {
     private func validatePrice() -> Bool {
         let priceValidator = ItemPriceValidator(price: price)
         let priceResult = priceValidator.validate()
-        
+
         priceError = priceResult.errorMessage
         return priceResult.isNg
     }
