@@ -69,10 +69,17 @@ struct CreateItemForm: View {
                 )
             }
 
-            Button("保存") {
-                validateAndSave()
+            HStack {
+                Button("キャンセル") {
+                    dismiss()
+                }
+                .buttonStyle(TertiaryButtonStyle(size: .medium))
+
+                Button("保存") {
+                    validateAndSave()
+                }
+                .buttonStyle(PrimaryButtonStyle(size: .medium))
             }
-            .frame(maxWidth: .infinity)
         }
     }
 
@@ -108,7 +115,7 @@ struct CreateItemForm: View {
     private func validatePrice() -> Bool {
         let priceValidator = ItemPriceValidator(price: price)
         let priceResult = priceValidator.validate()
-        
+
         priceError = priceResult.errorMessage
         return priceResult.isNg
     }
