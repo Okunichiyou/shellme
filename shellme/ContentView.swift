@@ -30,12 +30,44 @@ struct ContentView: View {
                                     destination: EditItemForm(item: item)
                                 ) {
                                     HStack {
+
+                                        Button(action: {
+                                            toggleCheck(item: item)
+                                        }) {
+                                            Image(
+                                                systemName: item.isChecked
+                                                    ? "checkmark.circle.fill"
+                                                    : "circle"
+                                            )
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(width: 20, height: 20)
+                                            .foregroundColor(
+                                                item.isChecked ? .gray : .pink)
+                                        }
+                                        .contentShape(Rectangle())
+                                        .buttonStyle(.plain)
+
                                         Text(item.name)
+                                            .foregroundColor(
+                                                item.isChecked
+                                                    ? .gray : .primary
+                                            )
+                                            .strikethrough(
+                                                item.isChecked, color: .gray
+                                            )
                                             .frame(
                                                 maxWidth: .infinity,
                                                 alignment: .leading)
 
                                         Text(String(item.amount))
+                                            .foregroundColor(
+                                                item.isChecked
+                                                    ? .gray : .primary
+                                            )
+                                            .strikethrough(
+                                                item.isChecked, color: .gray
+                                            )
                                             .frame(
                                                 width: 30, alignment: .trailing)
 
@@ -43,11 +75,25 @@ struct ContentView: View {
                                             Text(
                                                 "\(price, format: .currency(code: "JPY"))"
                                             )
+                                            .foregroundColor(
+                                                item.isChecked
+                                                    ? .gray : .primary
+                                            )
+                                            .strikethrough(
+                                                item.isChecked, color: .gray
+                                            )
                                             .frame(
                                                 width: 100, alignment: .trailing
                                             )
                                         } else {
                                             Text("-")
+                                                .foregroundColor(
+                                                    item.isChecked
+                                                        ? .gray : .primary
+                                                )
+                                                .strikethrough(
+                                                    item.isChecked, color: .gray
+                                                )
                                                 .frame(
                                                     width: 100,
                                                     alignment: .trailing)
@@ -94,7 +140,8 @@ struct ContentView: View {
                     }
                 }
             }
-            .alert("すべてのアイテムを削除しますか？", isPresented: $isAllDeleteDialogPresented) {
+            .alert("すべてのアイテムを削除しますか？", isPresented: $isAllDeleteDialogPresented)
+            {
                 Button("キャンセル", role: .cancel) {}
                 Button("削除", role: .destructive) {
                     deleteAllItems()
@@ -118,6 +165,10 @@ struct ContentView: View {
         for item in items {
             modelContext.delete(item)
         }
+    }
+
+    private func toggleCheck(item: Item) {
+        item.isChecked.toggle()
     }
 }
 

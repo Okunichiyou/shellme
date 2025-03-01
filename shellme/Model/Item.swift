@@ -14,12 +14,14 @@ final class Item {
     var amount: Int
     var price: Float?
     var createdAt: Date
+    var isChecked: Bool
 
-    init(name: String, amount: Int, price: Float? = nil) {
+    init(name: String, amount: Int, price: Float? = nil, isChecked: Bool = false) {
         self.name = name
         self.amount = amount
         self.price = price
         self.createdAt = Date()
+        self.isChecked = isChecked
     }
 
     @MainActor
