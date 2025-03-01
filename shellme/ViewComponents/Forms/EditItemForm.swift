@@ -108,6 +108,7 @@ struct EditItemForm: View {
         }
 
         saveChanges()
+        dismiss()
     }
 
     private func validateName() -> Bool {
