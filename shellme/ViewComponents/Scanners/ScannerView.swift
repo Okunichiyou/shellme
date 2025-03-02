@@ -32,11 +32,11 @@ struct ScannerView: View {
                 price: $price,
                 currentStep: $currentStep
             )
-            
+
             Text(stepMessage)
+                .multilineTextAlignment(.center)
                 .foregroundColor(isHighlighted ? .yellow : .primary)
                 .animation(.easeInOut(duration: 0.5), value: isHighlighted)
-
 
             Form {
                 VStack(alignment: .leading) {
@@ -68,7 +68,7 @@ struct ScannerView: View {
                         keyboardType: .decimalPad
                     )
                 }
-                
+
                 VStack(alignment: .leading) {
                     HStack {
                         Text("個数").font(.caption).foregroundStyle(.gray)
@@ -160,7 +160,7 @@ struct ScannerView: View {
         case .priceStep:
             return "文字にハイライトが出たら、税込の値段をタップしてください"
         case .completed:
-            return "入力内容を確認し、保存してください"
+            return "個数の入力をし、入力内容の確認をした後、保存してください"
         }
     }
 
