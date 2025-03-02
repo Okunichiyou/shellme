@@ -25,13 +25,18 @@ struct ScannerView: View {
 
     var body: some View {
         VStack {
-            DataScanner(
-                isScanning: $isScanning,
-                isShowAlert: $isShowAlert,
-                name: $name,
-                price: $price,
-                currentStep: $currentStep
-            )
+            if isScanning {
+                DataScanner(
+                    isScanning: $isScanning,
+                    isShowAlert: $isShowAlert,
+                    name: $name,
+                    price: $price,
+                    currentStep: $currentStep
+                )
+                .transition(.move(edge: .top).combined(with: .opacity))
+            } else {
+                EmptyView()
+            }
 
             Text(stepMessage)
                 .multilineTextAlignment(.center)
@@ -104,6 +109,7 @@ struct ScannerView: View {
         .onChange(of: currentStep) {
             highlightStepMessage()
         }
+        .animation(.easeInOut(duration: 0.5), value: isScanning)
     }
 
     private func validateAndSave() {
