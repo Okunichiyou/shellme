@@ -12,7 +12,7 @@ struct ScannerView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
 
-    @State private var isScanning: Bool = false
+    @State private var isScanning: Bool = true
     @State private var isShowAlert: Bool = false
     @State private var name: String = ""
     @State private var amount: String = ""
@@ -25,17 +25,23 @@ struct ScannerView: View {
 
     var body: some View {
         VStack {
+            if isScanning {
+                DataScanner(
+                    isScanning: $isScanning,
+                    isShowAlert: $isShowAlert,
+                    name: $name,
+                    price: $price,
+                    currentStep: $currentStep
+                )
+                .transition(.move(edge: .top).combined(with: .opacity))
+            } else {
+                EmptyView()
+            }
+
             Text(stepMessage)
+                .multilineTextAlignment(.center)
                 .foregroundColor(isHighlighted ? .yellow : .primary)
                 .animation(.easeInOut(duration: 0.5), value: isHighlighted)
-
-            DataScanner(
-                isScanning: $isScanning,
-                isShowAlert: $isShowAlert,
-                name: $name,
-                price: $price,
-                currentStep: $currentStep
-            )
 
             Form {
                 VStack(alignment: .leading) {
@@ -56,6 +62,19 @@ struct ScannerView: View {
                 }
 
                 VStack(alignment: .leading) {
+                    Text("値段").font(.caption).foregroundStyle(.gray)
+
+                    if let priceError {
+                        Text(priceError).font(.caption).foregroundColor(.red)
+                    }
+
+                    RepresentableTextField(
+                        text: $price, placeholder: "値段",
+                        keyboardType: .decimalPad
+                    )
+                }
+
+                VStack(alignment: .leading) {
                     HStack {
                         Text("個数").font(.caption).foregroundStyle(.gray)
                         Text("*").foregroundColor(.red)
@@ -68,19 +87,6 @@ struct ScannerView: View {
                     RepresentableTextField(
                         text: $amount, placeholder: "個数",
                         keyboardType: .numberPad
-                    )
-                }
-
-                VStack(alignment: .leading) {
-                    Text("値段").font(.caption).foregroundStyle(.gray)
-
-                    if let priceError {
-                        Text(priceError).font(.caption).foregroundColor(.red)
-                    }
-
-                    RepresentableTextField(
-                        text: $price, placeholder: "値段",
-                        keyboardType: .decimalPad
                     )
                 }
 
@@ -97,18 +103,20 @@ struct ScannerView: View {
                 }
             }
         }
-        .task {
-            isScanning.toggle()
-        }
         .onAppear {
             highlightStepMessage()
         }
         .onChange(of: currentStep) {
             highlightStepMessage()
         }
+        .animation(.easeInOut(duration: 0.5), value: isScanning)
     }
 
     private func validateAndSave() {
+        UIApplication.shared.sendAction(
+            #selector(UIResponder.resignFirstResponder), to: nil, from: nil,
+            for: nil)
+
         let nameHasError = validateName()
         let amountHasError = validateAmount()
         let priceHasError = validatePrice()
@@ -118,7 +126,9 @@ struct ScannerView: View {
         }
 
         saveItem()
-        dismiss()
+        resetForm()
+        isScanning = true
+        currentStep = .nameStep
     }
 
     private func validateName() -> Bool {
@@ -140,7 +150,7 @@ struct ScannerView: View {
     private func validatePrice() -> Bool {
         let priceValidator = ItemPriceValidator(price: price)
         let priceResult = priceValidator.validate()
-        
+
         priceError = priceResult.errorMessage
         return priceResult.isNg
     }
@@ -153,11 +163,11 @@ struct ScannerView: View {
     private var stepMessage: String {
         switch currentStep {
         case .nameStep:
-            return "商品名をタップしてください"
+            return "文字にハイライトが出たら、商品名をタップしてください"
         case .priceStep:
-            return "税込の値段をタップしてください"
+            return "文字にハイライトが出たら、税込の値段をタップしてください"
         case .completed:
-            return "入力内容を確認し、保存してください"
+            return "個数を入力し、入力内容の確認をした後、保存してください"
         }
     }
 
@@ -166,6 +176,12 @@ struct ScannerView: View {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             isHighlighted = false
         }
+    }
+
+    private func resetForm() {
+        name = ""
+        amount = ""
+        price = ""
     }
 }
 
