@@ -57,6 +57,19 @@ struct ScannerView: View {
                 }
 
                 VStack(alignment: .leading) {
+                    Text("値段").font(.caption).foregroundStyle(.gray)
+
+                    if let priceError {
+                        Text(priceError).font(.caption).foregroundColor(.red)
+                    }
+
+                    RepresentableTextField(
+                        text: $price, placeholder: "値段",
+                        keyboardType: .decimalPad
+                    )
+                }
+                
+                VStack(alignment: .leading) {
                     HStack {
                         Text("個数").font(.caption).foregroundStyle(.gray)
                         Text("*").foregroundColor(.red)
@@ -69,19 +82,6 @@ struct ScannerView: View {
                     RepresentableTextField(
                         text: $amount, placeholder: "個数",
                         keyboardType: .numberPad
-                    )
-                }
-
-                VStack(alignment: .leading) {
-                    Text("値段").font(.caption).foregroundStyle(.gray)
-
-                    if let priceError {
-                        Text(priceError).font(.caption).foregroundColor(.red)
-                    }
-
-                    RepresentableTextField(
-                        text: $price, placeholder: "値段",
-                        keyboardType: .decimalPad
                     )
                 }
 
