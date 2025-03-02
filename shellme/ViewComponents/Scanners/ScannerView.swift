@@ -118,7 +118,9 @@ struct ScannerView: View {
         }
 
         saveItem()
-        dismiss()
+        resetForm()
+        isScanning = true
+        currentStep = .nameStep
     }
 
     private func validateName() -> Bool {
@@ -140,7 +142,7 @@ struct ScannerView: View {
     private func validatePrice() -> Bool {
         let priceValidator = ItemPriceValidator(price: price)
         let priceResult = priceValidator.validate()
-        
+
         priceError = priceResult.errorMessage
         return priceResult.isNg
     }
@@ -166,6 +168,12 @@ struct ScannerView: View {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             isHighlighted = false
         }
+    }
+
+    private func resetForm() {
+        name = ""
+        amount = ""
+        price = ""
     }
 }
 
