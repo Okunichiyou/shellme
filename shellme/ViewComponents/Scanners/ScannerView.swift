@@ -12,7 +12,7 @@ struct ScannerView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
 
-    @State private var isScanning: Bool = false
+    @State private var isScanning: Bool = true
     @State private var isShowAlert: Bool = false
     @State private var name: String = ""
     @State private var amount: String = ""
@@ -97,9 +97,6 @@ struct ScannerView: View {
                     .buttonStyle(PrimaryButtonStyle(size: .medium))
                 }
             }
-        }
-        .task {
-            isScanning.toggle()
         }
         .onAppear {
             highlightStepMessage()
