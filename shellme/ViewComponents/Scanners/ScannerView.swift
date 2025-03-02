@@ -25,10 +25,6 @@ struct ScannerView: View {
 
     var body: some View {
         VStack {
-            Text(stepMessage)
-                .foregroundColor(isHighlighted ? .yellow : .primary)
-                .animation(.easeInOut(duration: 0.5), value: isHighlighted)
-
             DataScanner(
                 isScanning: $isScanning,
                 isShowAlert: $isShowAlert,
@@ -36,6 +32,11 @@ struct ScannerView: View {
                 price: $price,
                 currentStep: $currentStep
             )
+            
+            Text(stepMessage)
+                .foregroundColor(isHighlighted ? .yellow : .primary)
+                .animation(.easeInOut(duration: 0.5), value: isHighlighted)
+
 
             Form {
                 VStack(alignment: .leading) {
@@ -155,9 +156,9 @@ struct ScannerView: View {
     private var stepMessage: String {
         switch currentStep {
         case .nameStep:
-            return "商品名をタップしてください"
+            return "文字にハイライトが出たら、商品名をタップしてください"
         case .priceStep:
-            return "税込の値段をタップしてください"
+            return "文字にハイライトが出たら、税込の値段をタップしてください"
         case .completed:
             return "入力内容を確認し、保存してください"
         }
