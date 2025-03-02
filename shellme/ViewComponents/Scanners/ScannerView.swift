@@ -165,7 +165,7 @@ struct ScannerView: View {
         case .priceStep:
             return "文字にハイライトが出たら、税込の値段をタップしてください"
         case .completed:
-            return "個数の入力をし、入力内容の確認をした後、保存してください"
+            return "個数を入力し、入力内容の確認をした後、保存してください"
         }
     }
 
