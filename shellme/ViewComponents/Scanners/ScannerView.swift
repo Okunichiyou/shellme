@@ -113,7 +113,9 @@ struct ScannerView: View {
     }
 
     private func validateAndSave() {
-        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+        UIApplication.shared.sendAction(
+            #selector(UIResponder.resignFirstResponder), to: nil, from: nil,
+            for: nil)
 
         let nameHasError = validateName()
         let amountHasError = validateAmount()
