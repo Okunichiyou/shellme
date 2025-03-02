@@ -400,6 +400,7 @@
 				DEVELOPMENT_TEAM = 36S326MPS3;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "シェルメ";
 				INFOPLIST_KEY_NSCameraUsageDescription = "カメラで映したテキストを入力するために利用許可が必要です。";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -430,6 +431,7 @@
 				DEVELOPMENT_TEAM = 36S326MPS3;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "シェルメ";
 				INFOPLIST_KEY_NSCameraUsageDescription = "カメラで映したテキストを入力するために利用許可が必要です。";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
