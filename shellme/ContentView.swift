@@ -5,6 +5,8 @@
 //  Created by 斉藤祐大 on 2025/01/19.
 //
 
+import AppTrackingTransparency
+import GoogleMobileAds
 import SwiftData
 import SwiftUI
 
@@ -128,6 +130,8 @@ struct ContentView: View {
                             .padding(.bottom, 20)
                         }
                     }
+                    BannerAdView()
+                        .frame(width: 320, height: 50)
                 }
             }
             .toolbar {
@@ -152,6 +156,14 @@ struct ContentView: View {
         }
         .sheet(isPresented: $isAddFormPresented) {
             CreateItemForm()
+        }
+        .onReceive(
+            NotificationCenter.default.publisher(
+                for: UIApplication.didBecomeActiveNotification)
+        ) { _ in
+            ATTrackingManager.requestTrackingAuthorization(completionHandler: {
+                _ in
+            })
         }
     }
 
