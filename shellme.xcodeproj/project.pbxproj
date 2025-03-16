@@ -33,9 +33,22 @@
 		91E9E94E2D3CCA2800735BC9 /* shellmeUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = shellmeUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		9115CA482D84F37F0002F44B /* Exceptions for "shellme" folder in "shellme" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 91E9E9312D3CCA2600735BC9 /* shellme */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		91E9E9342D3CCA2600735BC9 /* shellme */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				9115CA482D84F37F0002F44B /* Exceptions for "shellme" folder in "shellme" target */,
+			);
 			path = shellme;
 			sourceTree = "<group>";
 		};
@@ -403,12 +416,17 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				BANNER_ID = "";
+				"BANNER_ID[arch=*]" = "ca-app-pub-3940256099942544/2934735716";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"shellme/Preview Content\"";
 				DEVELOPMENT_TEAM = 36S326MPS3;
 				ENABLE_PREVIEWS = YES;
+				GADApplicationIdentifier = "";
+				"GADApplicationIdentifier[arch=*]" = "ca-app-pub-3940256099942544~1458002511";
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = shellme/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "シェルメ";
 				INFOPLIST_KEY_NSCameraUsageDescription = "カメラで映したテキストを入力するために利用許可が必要です。";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -434,12 +452,15 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				BANNER_ID = "";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"shellme/Preview Content\"";
 				DEVELOPMENT_TEAM = 36S326MPS3;
 				ENABLE_PREVIEWS = YES;
+				GADApplicationIdentifier = "";
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = shellme/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "シェルメ";
 				INFOPLIST_KEY_NSCameraUsageDescription = "カメラで映したテキストを入力するために利用許可が必要です。";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
