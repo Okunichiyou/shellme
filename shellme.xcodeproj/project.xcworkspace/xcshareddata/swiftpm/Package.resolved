@@ -1,6 +1,15 @@
 {
-  "originHash" : "3b9752ff554d5fdc91a7c01c2322a5d851b0979c36f02eb55188d9ab9e3d7e77",
+  "originHash" : "7169b4c934253d0541333c14437349a5a5dd57d6a8cd463a2e8483bd37bb57cb",
   "pins" : [
+    {
+      "identity" : "licenselist",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/cybozu/LicenseList",
+      "state" : {
+        "revision" : "4801461b9ca8eee843c19ab8fe88a590ce064e15",
+        "version" : "2.0.1"
+      }
+    },
     {
       "identity" : "swift-package-manager-google-mobile-ads",
       "kind" : "remoteSourceControl",

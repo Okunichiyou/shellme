@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		914081642D746F1F00706F79 /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = 914081632D746F1F00706F79 /* GoogleMobileAds */; };
+		91D889212D88538D00FC1178 /* LicenseList in Frameworks */ = {isa = PBXBuildFile; productRef = 91D889202D88538D00FC1178 /* LicenseList */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -69,6 +70,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				91D889212D88538D00FC1178 /* LicenseList in Frameworks */,
 				914081642D746F1F00706F79 /* GoogleMobileAds in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -131,6 +133,7 @@
 			name = shellme;
 			packageProductDependencies = (
 				914081632D746F1F00706F79 /* GoogleMobileAds */,
+				91D889202D88538D00FC1178 /* LicenseList */,
 			);
 			productName = shellme;
 			productReference = 91E9E9322D3CCA2600735BC9 /* shellme.app */;
@@ -217,6 +220,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				914081622D746F1F00706F79 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */,
+				91D8891F2D8852C000FC1178 /* XCRemoteSwiftPackageReference "LicenseList" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 91E9E9332D3CCA2600735BC9 /* Products */;
@@ -604,6 +608,14 @@
 				minimumVersion = 12.1.0;
 			};
 		};
+		91D8891F2D8852C000FC1178 /* XCRemoteSwiftPackageReference "LicenseList" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/cybozu/LicenseList";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.1;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -611,6 +623,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 914081622D746F1F00706F79 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */;
 			productName = GoogleMobileAds;
+		};
+		91D889202D88538D00FC1178 /* LicenseList */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 91D8891F2D8852C000FC1178 /* XCRemoteSwiftPackageReference "LicenseList" */;
+			productName = LicenseList;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
