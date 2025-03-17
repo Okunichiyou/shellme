@@ -16,6 +16,29 @@ struct ContentView: View {
     @State private var isAddFormPresented = false
     @State private var isAllDeleteDialogPresented = false
 
+    init() {
+        let appearance = UINavigationBarAppearance()
+        appearance.backgroundColor = UIColor.systemPink
+        
+        appearance.titleTextAttributes = [
+            .foregroundColor: UIColor.white
+        ]
+
+        let backButtonAppearance = UIBarButtonItemAppearance()
+        backButtonAppearance.normal.titleTextAttributes = [
+            .foregroundColor: UIColor.white
+        ]
+        appearance.backButtonAppearance = backButtonAppearance
+
+        let backImage = UIImage(systemName: "chevron.backward")?.withTintColor(
+            .white, renderingMode: .alwaysOriginal)
+        appearance.setBackIndicatorImage(
+            backImage, transitionMaskImage: backImage)
+
+        UINavigationBar.appearance().standardAppearance = appearance
+        UINavigationBar.appearance().scrollEdgeAppearance = appearance
+    }
+
     var body: some View {
         NavigationView {
             ZStack {
@@ -24,6 +47,7 @@ struct ContentView: View {
 
                 VStack {
                     TotalPrice()
+                        .padding(.top, 20)
 
                     ZStack {
                         List {
@@ -134,13 +158,26 @@ struct ContentView: View {
                         .frame(width: 320, height: 50)
                 }
             }
+            .toolbarBackground(Color.pink, for: .navigationBar)
+            .toolbarBackground(.visible, for: .navigationBar)
             .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
+                ToolbarItem(placement: .navigationBarLeading) {
                     Button(role: .destructive) {
                         isAllDeleteDialogPresented = true
                     } label: {
                         Image(systemName: "trash")
-                            .foregroundColor(.red)
+                            .resizable()
+                            .frame(width: 30, height: 30)
+                            .foregroundColor(.white)
+                    }
+                }
+
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    NavigationLink(destination: SettingView()) {
+                        Image(systemName: "gearshape.fill")
+                            .resizable()
+                            .frame(width: 30, height: 30)
+                            .foregroundColor(.white)
                     }
                 }
             }
