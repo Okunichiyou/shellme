@@ -19,7 +19,7 @@ struct ContentView: View {
     init() {
         let appearance = UINavigationBarAppearance()
         appearance.backgroundColor = UIColor.systemPink
-        
+
         appearance.titleTextAttributes = [
             .foregroundColor: UIColor.white
         ]
@@ -198,9 +198,12 @@ struct ContentView: View {
             NotificationCenter.default.publisher(
                 for: UIApplication.didBecomeActiveNotification)
         ) { _ in
-            ATTrackingManager.requestTrackingAuthorization(completionHandler: {
-                _ in
-            })
+            OperationQueue.main.addOperation {
+                ATTrackingManager.requestTrackingAuthorization(
+                    completionHandler: {
+                        _ in
+                    })
+            }
         }
     }
 
