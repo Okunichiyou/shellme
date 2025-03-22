@@ -5,6 +5,8 @@
 //  Created by 斉藤祐大 on 2025/01/19.
 //
 
+import AppTrackingTransparency
+import GoogleMobileAds
 import SwiftData
 import SwiftUI
 
@@ -14,6 +16,29 @@ struct ContentView: View {
     @State private var isAddFormPresented = false
     @State private var isAllDeleteDialogPresented = false
 
+    init() {
+        let appearance = UINavigationBarAppearance()
+        appearance.backgroundColor = UIColor.systemPink
+
+        appearance.titleTextAttributes = [
+            .foregroundColor: UIColor.white
+        ]
+
+        let backButtonAppearance = UIBarButtonItemAppearance()
+        backButtonAppearance.normal.titleTextAttributes = [
+            .foregroundColor: UIColor.white
+        ]
+        appearance.backButtonAppearance = backButtonAppearance
+
+        let backImage = UIImage(systemName: "chevron.backward")?.withTintColor(
+            .white, renderingMode: .alwaysOriginal)
+        appearance.setBackIndicatorImage(
+            backImage, transitionMaskImage: backImage)
+
+        UINavigationBar.appearance().standardAppearance = appearance
+        UINavigationBar.appearance().scrollEdgeAppearance = appearance
+    }
+
     var body: some View {
         NavigationView {
             ZStack {
@@ -22,6 +47,7 @@ struct ContentView: View {
 
                 VStack {
                     TotalPrice()
+                        .padding(.top, 20)
 
                     ZStack {
                         List {
@@ -128,15 +154,30 @@ struct ContentView: View {
                             .padding(.bottom, 20)
                         }
                     }
+                    BannerAdView()
+                        .frame(width: 320, height: 50)
                 }
             }
+            .toolbarBackground(Color.pink, for: .navigationBar)
+            .toolbarBackground(.visible, for: .navigationBar)
             .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
+                ToolbarItem(placement: .navigationBarLeading) {
                     Button(role: .destructive) {
                         isAllDeleteDialogPresented = true
                     } label: {
                         Image(systemName: "trash")
-                            .foregroundColor(.red)
+                            .resizable()
+                            .frame(width: 30, height: 30)
+                            .foregroundColor(.white)
+                    }
+                }
+
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    NavigationLink(destination: SettingView()) {
+                        Image(systemName: "gearshape.fill")
+                            .resizable()
+                            .frame(width: 30, height: 30)
+                            .foregroundColor(.white)
                     }
                 }
             }
@@ -152,6 +193,17 @@ struct ContentView: View {
         }
         .sheet(isPresented: $isAddFormPresented) {
             CreateItemForm()
+        }
+        .onReceive(
+            NotificationCenter.default.publisher(
+                for: UIApplication.didBecomeActiveNotification)
+        ) { _ in
+            OperationQueue.main.addOperation {
+                ATTrackingManager.requestTrackingAuthorization(
+                    completionHandler: {
+                        _ in
+                    })
+            }
         }
     }
 
