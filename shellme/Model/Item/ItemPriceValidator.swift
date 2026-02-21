@@ -14,7 +14,7 @@ struct ItemPriceValidator: Validator {
         case none
         case isNotNumber(String)
 
-        var isOk: Bool {
+        var isValid: Bool {
             if case .none = self { return true } else { return false }
         }
 

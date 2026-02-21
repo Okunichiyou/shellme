@@ -14,7 +14,7 @@ struct ItemNameValidator: Validator {
         case none
         case required(String)
 
-        var isOk: Bool {
+        var isValid: Bool {
             if case .none = self { return true } else { return false }
         }
 

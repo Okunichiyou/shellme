@@ -12,15 +12,11 @@ protocol Validator {
     func validate() -> ResultType
 }
 
-extension Validator {
-    func isValid() -> Bool { validate().isOk }
-}
-
 protocol ValidationResult {
-    var isOk: Bool { get }
+    var isValid: Bool { get }
     var errorMessage: String? { get }
 }
 
 extension ValidationResult {
-    var isNg: Bool { !isOk }
+    var isNg: Bool { !isValid }
 }

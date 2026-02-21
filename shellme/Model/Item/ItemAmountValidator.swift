@@ -16,7 +16,7 @@ struct ItemAmountValidator: Validator {
         case isNotNumber(String)
         case isLessThanOne(String)
 
-        var isOk: Bool {
+        var isValid: Bool {
             if case .none = self { return true } else { return false }
         }
 
