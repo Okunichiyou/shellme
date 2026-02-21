@@ -1,24 +1,32 @@
 //
-//  CreateItemForm.swift
+//  EditItemForm.swift
 //  shellme
 //
-//  Created by 斉藤祐大 on 2025/02/02.
+//  Created by 斉藤祐大 on 2025/02/09.
 //
 
 import SwiftUI
 
-struct CreateItemForm: View {
+struct EditItemView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
 
-    @State private var name: String = ""
-    @State private var amount: String = ""
-    @State private var price: String = ""
+    var item: Item
+    @FocusState var focus: Bool
+
+    @State private var name: String
+    @State private var amount: String
+    @State private var price: String
     @State private var nameError: String?
     @State private var amountError: String?
     @State private var priceError: String?
 
-    @FocusState var focus: Bool
+    init(item: Item) {
+        self.item = item
+        _name = State(initialValue: item.name)
+        _amount = State(initialValue: String(item.amount))
+        _price = State(initialValue: item.price.map { String($0) } ?? "")
+    }
 
     var body: some View {
         TotalPrice()
@@ -30,13 +38,16 @@ struct CreateItemForm: View {
                     Text("商品名").font(.caption).foregroundStyle(.gray)
                     Text("*").foregroundColor(.red)
                 }
+
                 if let nameError {
                     Text(nameError)
                         .font(.caption)
                         .foregroundColor(.red)
                 }
+
                 RepresentableTextField(
-                    text: $name, placeholder: "商品名", isFirstResponder: true
+                    text: $name,
+                    placeholder: "商品名"
                 )
                 .focused(self.$focus)
             }
@@ -52,7 +63,9 @@ struct CreateItemForm: View {
                 }
 
                 RepresentableTextField(
-                    text: $amount, placeholder: "個数", keyboardType: .numberPad
+                    text: $amount,
+                    placeholder: "個数",
+                    keyboardType: .numberPad
                 )
             }
 
@@ -64,7 +77,8 @@ struct CreateItemForm: View {
                 }
 
                 RepresentableTextField(
-                    text: $price, placeholder: "値段",
+                    text: $price,
+                    placeholder: "値段",
                     keyboardType: .decimalPad
                 )
             }
@@ -81,19 +95,20 @@ struct CreateItemForm: View {
                 .buttonStyle(PrimaryButtonStyle(size: .medium))
             }
         }
+        .presentationDetents([.fraction(0.45)])
     }
 
     private func validateAndSave() {
         let nameHasError = validateName()
         let amountHasError = validateAmount()
-        let priceHasError = validatePrice()
+        let priceHasError = validateAmount()
 
         if nameHasError || amountHasError || priceHasError {
             return
         }
 
-        saveItem()
-        resetForm()
+        saveChanges()
+        dismiss()
     }
 
     private func validateName() -> Bool {
@@ -120,20 +135,13 @@ struct CreateItemForm: View {
         return priceResult.isNg
     }
 
-    private func saveItem() {
-        let item = Item(name: name, amount: Int(amount)!, price: Float(price))
-        modelContext.insert(item)
-    }
-
-    private func resetForm() {
-        name = ""
-        amount = ""
-        price = ""
-
-        self.focus = true
+    private func saveChanges() {
+        item.name = name
+        item.amount = Int(amount)!
+        item.price = Float(price) ?? nil
     }
 }
 
 #Preview {
-    CreateItemForm()
+    EditItemView(item: SampleData.shared.item)
 }

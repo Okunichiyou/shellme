@@ -53,7 +53,7 @@ struct ContentView: View {
                         List {
                             ForEach(items) { item in
                                 NavigationLink(
-                                    destination: EditItemForm(item: item)
+                                    destination: EditItemView(item: item)
                                 ) {
                                     HStack {
 
@@ -173,7 +173,7 @@ struct ContentView: View {
                 }
 
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    NavigationLink(destination: SettingView()) {
+                    NavigationLink(destination: SettingsView()) {
                         Image(systemName: "gearshape.fill")
                             .resizable()
                             .frame(width: 30, height: 30)
@@ -192,7 +192,7 @@ struct ContentView: View {
             }
         }
         .sheet(isPresented: $isAddFormPresented) {
-            CreateItemForm()
+            CreateItemView()
         }
         .onReceive(
             NotificationCenter.default.publisher(

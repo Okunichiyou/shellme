@@ -8,7 +8,7 @@
 import LicenseList
 import SwiftUI
 
-struct OssLicencesList: View {
+struct OssLicencesListView: View {
     var body: some View {
         LicenseListView()
             .licenseViewStyle(.withRepositoryAnchorLink)
@@ -18,5 +18,5 @@ struct OssLicencesList: View {
 }
 
 #Preview {
-    OssLicencesList()
+    OssLicencesListView()
 }

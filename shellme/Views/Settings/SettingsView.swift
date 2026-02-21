@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct SettingView: View {
+struct SettingsView: View {
     let privacyPolicyURL = URL(
         string: "https://okunichiyou.github.io/shellme-docs/privacy-policy")!
     let ossLicenseURL = URL(string: "https://yourosslicenseurl.com")!
@@ -17,7 +17,7 @@ struct SettingView: View {
             Link("プライバシーポリシー", destination: privacyPolicyURL)
 
             NavigationLink {
-                OssLicencesList()
+                OssLicencesListView()
             } label: {
                 Text("OSSライセンス")
             }
@@ -27,5 +27,5 @@ struct SettingView: View {
 }
 
 #Preview {
-    SettingView()
+    SettingsView()
 }
