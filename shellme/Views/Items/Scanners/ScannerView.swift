@@ -74,9 +74,8 @@ struct ScannerView: View {
                     .padding(.top, 16)
                     .animation(.easeInOut(duration: 0.3), value: errorMessage)
                 }
+                .frame(maxHeight: 250)
                 .transition(.move(edge: .top).combined(with: .opacity))
-            } else {
-                EmptyView()
             }
 
             Form {
