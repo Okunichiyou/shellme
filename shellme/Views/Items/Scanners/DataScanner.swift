@@ -23,6 +23,7 @@ struct DataScanner: UIViewControllerRepresentable {
             qualityLevel: .accurate,
             recognizesMultipleItems: true,
             isPinchToZoomEnabled: true,
+            isGuidanceEnabled: false,
             isHighlightingEnabled: true
         )
 

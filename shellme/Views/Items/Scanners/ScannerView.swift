@@ -18,7 +18,6 @@ struct ScannerView: View {
     @State private var amount: String = ""
     @State private var price: String = ""
     @State private var currentStep: ScanStep = .scanning
-    @State private var isHighlighted: Bool = false
     @State private var nameError: String?
     @State private var amountError: String?
     @State private var priceError: String?
@@ -27,31 +26,58 @@ struct ScannerView: View {
     var body: some View {
         VStack {
             if isScanning {
-                DataScanner(
-                    isScanning: $isScanning,
-                    isShowAlert: $isShowAlert,
-                    name: $name,
-                    price: $price,
-                    currentStep: $currentStep,
-                    errorMessage: $errorMessage
-                )
+                ZStack(alignment: .top) {
+                    DataScanner(
+                        isScanning: $isScanning,
+                        isShowAlert: $isShowAlert,
+                        name: $name,
+                        price: $price,
+                        currentStep: $currentStep,
+                        errorMessage: $errorMessage
+                    )
+
+                    VStack(spacing: 8) {
+                        HStack(spacing: 8) {
+                            Image(systemName: stepIcon)
+                                .font(.system(size: 16, weight: .semibold))
+                            Text(stepMessage)
+                                .font(.subheadline)
+                                .fontWeight(.medium)
+                        }
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 10)
+                        .background(
+                            Capsule()
+                                .fill(Color.pink.opacity(0.9))
+                                .shadow(color: .black.opacity(0.2), radius: 4, y: 2)
+                        )
+
+                        if let errorMessage {
+                            HStack(spacing: 6) {
+                                Image(systemName: "exclamationmark.triangle.fill")
+                                    .font(.system(size: 14))
+                                Text(errorMessage)
+                                    .font(.caption)
+                                    .fontWeight(.medium)
+                            }
+                            .foregroundColor(.white)
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 8)
+                            .background(
+                                Capsule()
+                                    .fill(Color.red.opacity(0.9))
+                                    .shadow(color: .black.opacity(0.2), radius: 4, y: 2)
+                            )
+                        }
+                    }
+                    .padding(.top, 16)
+                    .animation(.easeInOut(duration: 0.3), value: errorMessage)
+                }
                 .transition(.move(edge: .top).combined(with: .opacity))
             } else {
                 EmptyView()
             }
-            
-            // エラーメッセージ表示
-            if let errorMessage {
-                Text(errorMessage)
-                    .multilineTextAlignment(.center)
-                    .foregroundColor(.red)
-                    .padding()
-            }
-
-            Text(stepMessage)
-                .multilineTextAlignment(.center)
-                .foregroundColor(isHighlighted ? .yellow : .primary)
-                .animation(.easeInOut(duration: 0.5), value: isHighlighted)
 
             Form {
                 VStack(alignment: .leading) {
@@ -113,12 +139,6 @@ struct ScannerView: View {
                 }
             }
         }
-        .onAppear {
-            highlightStepMessage()
-        }
-        .onChange(of: currentStep) {
-            highlightStepMessage()
-        }
         .animation(.easeInOut(duration: 0.5), value: isScanning)
     }
 
@@ -173,16 +193,18 @@ struct ScannerView: View {
     private var stepMessage: String {
         switch currentStep {
         case .scanning:
-            return "値札を映してください..."
+            return "値札を映してください"
         case .completed:
             return "個数を入力し、保存してください"
         }
     }
 
-    private func highlightStepMessage() {
-        isHighlighted = true
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            isHighlighted = false
+    private var stepIcon: String {
+        switch currentStep {
+        case .scanning:
+            return "viewfinder"
+        case .completed:
+            return "checkmark.circle.fill"
         }
     }
 
