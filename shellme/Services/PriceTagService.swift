@@ -7,6 +7,7 @@
 
 import Foundation
 import ArkanaKeys
+import Network
 
 struct PriceTagResponse: Codable {
     let name: String
@@ -53,14 +54,14 @@ enum PriceTagServiceError: LocalizedError {
 
 final class PriceTagService: Sendable {
     private let baseURL = Keys.Global().bASE_URL
-    
+
     func parsePriceTag(items: [TextItem]) async throws -> PriceTagResponse {
         guard let url = URL(string: "\(baseURL)/api/parse-price-tag") else {
             throw URLError(.badURL)
         }
 
         // ネットワーク接続確認
-        guard isNetworkAvailable() else {
+        guard await isNetworkAvailable() else {
             throw PriceTagServiceError.offline
         }
 
@@ -70,32 +71,34 @@ final class PriceTagService: Sendable {
 
         let requestBody = PriceTagRequest(items: items)
         request.httpBody = try JSONEncoder().encode(requestBody)
-        
+
         do {
             let (data, response) = try await URLSession.shared.data(for: request)
-            
+
             guard let httpResponse = response as? HTTPURLResponse else {
                 throw PriceTagServiceError.invalidResponse
             }
-            
+
             guard httpResponse.statusCode == 200 else {
                 throw PriceTagServiceError.serverError("ステータスコード: \(httpResponse.statusCode)")
             }
-            
+
             let priceTagResponse = try JSONDecoder().decode(PriceTagResponse.self, from: data)
             return priceTagResponse
-            
-        } catch is URLError {
-            // URLErrorの場合はオフラインとみなす
-            throw PriceTagServiceError.offline
+
         } catch {
-            throw error
+            throw PriceTagServiceError.serverError(error.localizedDescription)
         }
     }
-    
-    private func isNetworkAvailable() -> Bool {
-        // 簡易的なネットワーク確認
-        // より詳細な確認が必要な場合はNetwork frameworkのNWPathMonitorを使用
-        return true // URLSession側でエラーハンドリングするため、ここではtrueを返す
+
+    private func isNetworkAvailable() async -> Bool {
+        await withCheckedContinuation { continuation in
+            let monitor = NWPathMonitor()
+            monitor.pathUpdateHandler = { path in
+                monitor.cancel()
+                continuation.resume(returning: path.status == .satisfied)
+            }
+            monitor.start(queue: DispatchQueue.global())
+        }
     }
 }
