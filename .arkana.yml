@@ -1,0 +1,5 @@
+import_name: ArkanaKeys
+namespace: Keys
+result_path: ArkanaKeys
+global_secrets:
+  - BASE_URL

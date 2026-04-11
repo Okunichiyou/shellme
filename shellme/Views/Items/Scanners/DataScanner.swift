@@ -15,6 +15,7 @@ struct DataScanner: UIViewControllerRepresentable {
     @Binding var name: String
     @Binding var price: String
     @Binding var currentStep: ScanStep
+    @Binding var errorMessage: String?
 
     func makeUIViewController(context: Context) -> DataScannerViewController {
         let controller = DataScannerViewController(
@@ -22,7 +23,8 @@ struct DataScanner: UIViewControllerRepresentable {
             qualityLevel: .accurate,
             recognizesMultipleItems: true,
             isPinchToZoomEnabled: true,
-            isHighlightingEnabled: true)
+            isHighlightingEnabled: true
+        )
 
         controller.delegate = context.coordinator
 
@@ -30,7 +32,8 @@ struct DataScanner: UIViewControllerRepresentable {
     }
 
     func updateUIViewController(
-        _ uiViewController: DataScannerViewController, context: Context
+        _ uiViewController: DataScannerViewController,
+        context: Context
     ) {
         if isScanning {
             do {
@@ -51,6 +54,9 @@ struct DataScanner: UIViewControllerRepresentable {
 
     class Coordinator: NSObject, DataScannerViewControllerDelegate {
         var parent: DataScanner
+        private var recognizedTexts: [RecognizedItem.Text] = []
+        private var scanTimer: Timer?
+        private let priceTagService = PriceTagService()
 
         init(_ parent: DataScanner) {
             self.parent = parent
@@ -58,23 +64,26 @@ struct DataScanner: UIViewControllerRepresentable {
 
         func dataScanner(
             _ dataScanner: DataScannerViewController,
-            didTapOn item: RecognizedItem
+            didUpdate updatedItems: [RecognizedItem],
+            allItems: [RecognizedItem]
         ) {
-            if case .text(let text) = item {
-                switch parent.currentStep {
-                case .nameStep:
-                    parent.name = text.transcript
-                    parent.currentStep = .priceStep
-                case .priceStep:
-                    let extractedPrice = extractTaxIncludedPrice(text.transcript)
-                    parent.price = extractedPrice
-                    parent.isScanning = false
-                    parent.currentStep = .completed
-                case .completed:
-                    break
+            // 認識されたテキストをキャッシュ
+            recognizedTexts = allItems.compactMap { item in
+                if case .text(let text) = item {
+                    return text
                 }
+                return nil
             }
 
+            // タイマーが未設定の場合のみ、スキャン開始から1秒後にAPIを呼び出す
+            if scanTimer == nil && parent.currentStep == .scanning {
+                scanTimer = Timer.scheduledTimer(
+                    withTimeInterval: 1.0,
+                    repeats: false
+                ) { [weak self] _ in
+                    self?.processRecognizedTexts()
+                }
+            }
         }
 
         func dataScanner(
@@ -94,25 +103,51 @@ struct DataScanner: UIViewControllerRepresentable {
                 print(error.localizedDescription)
             }
         }
-        
-        private func extractTaxIncludedPrice(_ text: String) -> String {
-            let patterns = [
-                #"税込[^\d]*(\d+[,.]?\d*)"#,
-                #"総額[^\d]*(\d+[,.]?\d*)"#,
-                #"内税[^\d]*(\d+[,.]?\d*)"#,
-                #"[^\d]*(\d+[,.]?\d*)"# // 税込表記がない場合でも数字をタップしていた場合は入力されるようにしておく
-            ]
 
-            for pattern in patterns {
-                if let match = text.range(of: pattern, options: .regularExpression) {
-                    let matchedText = String(text[match])
-                    if let numberMatch = matchedText.range(of: #"\d+[,.]?\d*"#, options: .regularExpression) {
-                        return String(matchedText[numberMatch])
-                    }
+        private func processRecognizedTexts() {
+            guard !recognizedTexts.isEmpty else { return }
+
+            // TextItem配列に変換（座標付き）
+            let items = recognizedTexts.map { text -> TextItem in
+                let bounds = text.bounds
+                return TextItem(
+                    text: text.transcript,
+                    boundingBox: BoundingBox(
+                        x: bounds.topLeft.x,
+                        y: bounds.topLeft.y,
+                        width: bounds.topRight.x - bounds.topLeft.x,
+                        height: bounds.bottomLeft.y - bounds.topLeft.y
+                    )
+                )
+            }
+            
+            print(items)
+
+            // APIを呼び出し
+            Task { @MainActor in
+                do {
+                    let response = try await priceTagService.parsePriceTag(
+                        items: items
+                    )
+
+                    // レスポンスをバインディングに設定
+                    parent.name = response.name
+                    parent.price = String(response.price)
+                    parent.currentStep = .completed
+                    parent.isScanning = false
+                    parent.errorMessage = nil
+
+                } catch let error as PriceTagServiceError {
+                    // オフラインエラーなどを表示
+                    parent.errorMessage = error.localizedDescription
+                    parent.isScanning = false
+
+                } catch {
+                    parent.errorMessage =
+                        "エラーが発生しました: \(error.localizedDescription)"
+                    parent.isScanning = false
                 }
             }
-
-            return text // 見つからなかった場合は元のテキストを返す
         }
     }
 }

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		910AA3602F49AB6D0065DF10 /* ArkanaKeys in Frameworks */ = {isa = PBXBuildFile; productRef = 910AA35F2F49AB6D0065DF10 /* ArkanaKeys */; };
 		914081642D746F1F00706F79 /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = 914081632D746F1F00706F79 /* GoogleMobileAds */; };
 		91D889212D88538D00FC1178 /* LicenseList in Frameworks */ = {isa = PBXBuildFile; productRef = 91D889202D88538D00FC1178 /* LicenseList */; };
 /* End PBXBuildFile section */
@@ -70,6 +71,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				910AA3602F49AB6D0065DF10 /* ArkanaKeys in Frameworks */,
 				91D889212D88538D00FC1178 /* LicenseList in Frameworks */,
 				914081642D746F1F00706F79 /* GoogleMobileAds in Frameworks */,
 			);
@@ -134,6 +136,7 @@
 			packageProductDependencies = (
 				914081632D746F1F00706F79 /* GoogleMobileAds */,
 				91D889202D88538D00FC1178 /* LicenseList */,
+				910AA35F2F49AB6D0065DF10 /* ArkanaKeys */,
 			);
 			productName = shellme;
 			productReference = 91E9E9322D3CCA2600735BC9 /* shellme.app */;
@@ -221,6 +224,7 @@
 			packageReferences = (
 				914081622D746F1F00706F79 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */,
 				91D8891F2D8852C000FC1178 /* XCRemoteSwiftPackageReference "LicenseList" */,
+				910AA35E2F49AB6D0065DF10 /* XCLocalSwiftPackageReference "ArkanaKeys/ArkanaKeys" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 91E9E9332D3CCA2600735BC9 /* Products */;
@@ -599,6 +603,13 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCLocalSwiftPackageReference section */
+		910AA35E2F49AB6D0065DF10 /* XCLocalSwiftPackageReference "ArkanaKeys/ArkanaKeys" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ArkanaKeys/ArkanaKeys;
+		};
+/* End XCLocalSwiftPackageReference section */
+
 /* Begin XCRemoteSwiftPackageReference section */
 		914081622D746F1F00706F79 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */ = {
 			isa = XCRemoteSwiftPackageReference;
@@ -619,6 +630,10 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		910AA35F2F49AB6D0065DF10 /* ArkanaKeys */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ArkanaKeys;
+		};
 		914081632D746F1F00706F79 /* GoogleMobileAds */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 914081622D746F1F00706F79 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */;

@@ -8,7 +8,6 @@
 import Foundation
 
 enum ScanStep {
-    case nameStep
-    case priceStep
+    case scanning
     case completed
 }

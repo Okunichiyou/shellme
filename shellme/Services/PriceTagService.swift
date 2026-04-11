@@ -1,0 +1,101 @@
+//
+//  PriceTagService.swift
+//  shellme
+//
+//  Created by 斉藤祐大 on 2025/02/21.
+//
+
+import Foundation
+import ArkanaKeys
+
+struct PriceTagResponse: Codable {
+    let name: String
+    let price: Double
+}
+
+struct BoundingBox: Codable {
+    let x: Double
+    let y: Double
+    let width: Double
+    let height: Double
+}
+
+struct TextItem: Codable {
+    let text: String
+    let boundingBox: BoundingBox
+
+    enum CodingKeys: String, CodingKey {
+        case text
+        case boundingBox = "bounding_box"
+    }
+}
+
+struct PriceTagRequest: Codable {
+    let items: [TextItem]
+}
+
+enum PriceTagServiceError: LocalizedError {
+    case offline
+    case invalidResponse
+    case serverError(String)
+    
+    var errorDescription: String? {
+        switch self {
+        case .offline:
+            return "オフラインなので使えない"
+        case .invalidResponse:
+            return "無効なレスポンスです"
+        case .serverError(let message):
+            return "サーバーエラー: \(message)"
+        }
+    }
+}
+
+final class PriceTagService: Sendable {
+    private let baseURL = Keys.Global().bASE_URL
+    
+    func parsePriceTag(items: [TextItem]) async throws -> PriceTagResponse {
+        guard let url = URL(string: "\(baseURL)/api/parse-price-tag") else {
+            throw URLError(.badURL)
+        }
+
+        // ネットワーク接続確認
+        guard isNetworkAvailable() else {
+            throw PriceTagServiceError.offline
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        let requestBody = PriceTagRequest(items: items)
+        request.httpBody = try JSONEncoder().encode(requestBody)
+        
+        do {
+            let (data, response) = try await URLSession.shared.data(for: request)
+            
+            guard let httpResponse = response as? HTTPURLResponse else {
+                throw PriceTagServiceError.invalidResponse
+            }
+            
+            guard httpResponse.statusCode == 200 else {
+                throw PriceTagServiceError.serverError("ステータスコード: \(httpResponse.statusCode)")
+            }
+            
+            let priceTagResponse = try JSONDecoder().decode(PriceTagResponse.self, from: data)
+            return priceTagResponse
+            
+        } catch is URLError {
+            // URLErrorの場合はオフラインとみなす
+            throw PriceTagServiceError.offline
+        } catch {
+            throw error
+        }
+    }
+    
+    private func isNetworkAvailable() -> Bool {
+        // 簡易的なネットワーク確認
+        // より詳細な確認が必要な場合はNetwork frameworkのNWPathMonitorを使用
+        return true // URLSession側でエラーハンドリングするため、ここではtrueを返す
+    }
+}

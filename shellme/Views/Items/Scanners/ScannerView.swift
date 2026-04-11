@@ -17,11 +17,12 @@ struct ScannerView: View {
     @State private var name: String = ""
     @State private var amount: String = ""
     @State private var price: String = ""
-    @State private var currentStep: ScanStep = .nameStep
+    @State private var currentStep: ScanStep = .scanning
     @State private var isHighlighted: Bool = false
     @State private var nameError: String?
     @State private var amountError: String?
     @State private var priceError: String?
+    @State private var errorMessage: String?
 
     var body: some View {
         VStack {
@@ -31,11 +32,20 @@ struct ScannerView: View {
                     isShowAlert: $isShowAlert,
                     name: $name,
                     price: $price,
-                    currentStep: $currentStep
+                    currentStep: $currentStep,
+                    errorMessage: $errorMessage
                 )
                 .transition(.move(edge: .top).combined(with: .opacity))
             } else {
                 EmptyView()
+            }
+            
+            // エラーメッセージ表示
+            if let errorMessage {
+                Text(errorMessage)
+                    .multilineTextAlignment(.center)
+                    .foregroundColor(.red)
+                    .padding()
             }
 
             Text(stepMessage)
@@ -128,7 +138,7 @@ struct ScannerView: View {
         saveItem()
         resetForm()
         isScanning = true
-        currentStep = .nameStep
+        currentStep = .scanning
     }
 
     private func validateName() -> Bool {
@@ -162,12 +172,10 @@ struct ScannerView: View {
 
     private var stepMessage: String {
         switch currentStep {
-        case .nameStep:
-            return "文字にハイライトが出たら、商品名をタップしてください"
-        case .priceStep:
-            return "文字にハイライトが出たら、税込の値段をタップしてください"
+        case .scanning:
+            return "値札を映してください..."
         case .completed:
-            return "個数を入力し、入力内容の確認をした後、保存してください"
+            return "個数を入力し、保存してください"
         }
     }
 
