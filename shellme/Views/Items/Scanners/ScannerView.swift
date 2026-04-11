@@ -25,8 +25,8 @@ struct ScannerView: View {
 
     var body: some View {
         VStack {
-            if isScanning {
-                ZStack(alignment: .top) {
+            ZStack(alignment: .top) {
+                if isScanning {
                     DataScanner(
                         isScanning: $isScanning,
                         isShowAlert: $isShowAlert,
@@ -35,48 +35,66 @@ struct ScannerView: View {
                         currentStep: $currentStep,
                         errorMessage: $errorMessage
                     )
+                } else {
+                    ZStack {
+                        Color(.systemGray5)
 
-                    VStack(spacing: 8) {
-                        HStack(spacing: 8) {
-                            Image(systemName: stepIcon)
-                                .font(.system(size: 16, weight: .semibold))
-                            Text(stepMessage)
-                                .font(.subheadline)
+                        Button(action: {
+                            isScanning = true
+                            currentStep = .scanning
+                            errorMessage = nil
+                        }) {
+                            VStack(spacing: 8) {
+                                Image(systemName: "camera.fill")
+                                    .font(.system(size: 32))
+                                Text("撮り直す")
+                                    .font(.subheadline)
+                                    .fontWeight(.medium)
+                            }
+                            .foregroundColor(.pink)
+                        }
+                    }
+                }
+
+                VStack(spacing: 8) {
+                    HStack(spacing: 8) {
+                        Image(systemName: stepIcon)
+                            .font(.system(size: 16, weight: .semibold))
+                        Text(stepMessage)
+                            .font(.subheadline)
+                            .fontWeight(.medium)
+                    }
+                    .foregroundColor(.white)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 10)
+                    .background(
+                        Capsule()
+                            .fill(Color.pink.opacity(0.9))
+                            .shadow(color: .black.opacity(0.2), radius: 4, y: 2)
+                    )
+
+                    if let errorMessage {
+                        HStack(spacing: 6) {
+                            Image(systemName: "exclamationmark.triangle.fill")
+                                .font(.system(size: 14))
+                            Text(errorMessage)
+                                .font(.caption)
                                 .fontWeight(.medium)
                         }
                         .foregroundColor(.white)
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 10)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 8)
                         .background(
                             Capsule()
-                                .fill(Color.pink.opacity(0.9))
+                                .fill(Color.red.opacity(0.9))
                                 .shadow(color: .black.opacity(0.2), radius: 4, y: 2)
                         )
-
-                        if let errorMessage {
-                            HStack(spacing: 6) {
-                                Image(systemName: "exclamationmark.triangle.fill")
-                                    .font(.system(size: 14))
-                                Text(errorMessage)
-                                    .font(.caption)
-                                    .fontWeight(.medium)
-                            }
-                            .foregroundColor(.white)
-                            .padding(.horizontal, 12)
-                            .padding(.vertical, 8)
-                            .background(
-                                Capsule()
-                                    .fill(Color.red.opacity(0.9))
-                                    .shadow(color: .black.opacity(0.2), radius: 4, y: 2)
-                            )
-                        }
                     }
-                    .padding(.top, 16)
-                    .animation(.easeInOut(duration: 0.3), value: errorMessage)
                 }
-                .frame(maxHeight: 250)
-                .transition(.move(edge: .top).combined(with: .opacity))
+                .padding(.top, 16)
+                .animation(.easeInOut(duration: 0.3), value: errorMessage)
             }
+            .frame(maxHeight: 250)
 
             Form {
                 VStack(alignment: .leading) {
