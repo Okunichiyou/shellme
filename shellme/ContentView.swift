@@ -55,64 +55,10 @@ struct ContentView: View {
                                 NavigationLink(
                                     destination: EditItemView(item: item)
                                 ) {
-                                    HStack {
-
-                                        Button(action: {
-                                            toggleCheck(item: item)
-                                        }) {
-                                            Image(
-                                                systemName: item.isChecked
-                                                    ? "checkmark.circle.fill"
-                                                    : "circle"
-                                            )
-                                            .resizable()
-                                            .scaledToFit()
-                                            .frame(width: 20, height: 20)
-                                            .foregroundColor(
-                                                item.isChecked ? .gray : .pink)
-                                        }
-                                        .contentShape(Rectangle())
-                                        .buttonStyle(.plain)
-
-                                        Text(item.name)
-                                            .foregroundColor(
-                                                item.isChecked
-                                                    ? .gray : .primary
-                                            )
-                                            .strikethrough(
-                                                item.isChecked, color: .gray
-                                            )
-                                            .frame(
-                                                maxWidth: .infinity,
-                                                alignment: .leading)
-
-                                        Text(String(item.amount))
-                                            .foregroundColor(
-                                                item.isChecked
-                                                    ? .gray : .primary
-                                            )
-                                            .strikethrough(
-                                                item.isChecked, color: .gray
-                                            )
-                                            .frame(
-                                                width: 30, alignment: .trailing)
-
-                                        if let price = item.price {
-                                            Text(
-                                                "\(price, format: .currency(code: "JPY"))"
-                                            )
-                                            .foregroundColor(
-                                                item.isChecked
-                                                    ? .gray : .primary
-                                            )
-                                            .strikethrough(
-                                                item.isChecked, color: .gray
-                                            )
-                                            .frame(
-                                                width: 100, alignment: .trailing
-                                            )
-                                        } else {
-                                            Text("-")
+                                    VStack(alignment: .leading, spacing: 8) {
+                                        HStack(alignment: .center) {
+                                            Text(item.name)
+                                                .font(.headline)
                                                 .foregroundColor(
                                                     item.isChecked
                                                         ? .gray : .primary
@@ -120,11 +66,86 @@ struct ContentView: View {
                                                 .strikethrough(
                                                     item.isChecked, color: .gray
                                                 )
-                                                .frame(
-                                                    width: 100,
-                                                    alignment: .trailing)
+                                                .lineLimit(1)
+
+                                            Spacer()
+
+                                            Button(action: {
+                                                toggleCheck(item: item)
+                                            }) {
+                                                HStack(spacing: 6) {
+                                                    Image(
+                                                        systemName: item
+                                                            .isChecked
+                                                            ? "checkmark.square.fill"
+                                                            : "square"
+                                                    )
+                                                    .font(.system(size: 18))
+                                                    Text(
+                                                        item.isChecked
+                                                            ? "カート追加済み"
+                                                            : "カート未追加")
+                                                }
+                                                .font(.caption)
+                                                .foregroundColor(
+                                                    item.isChecked
+                                                        ? .gray : .pink)
+                                            }
+                                            .buttonStyle(.plain)
+                                        }
+
+                                        HStack(spacing: 16) {
+                                            Label {
+                                                Text("\(item.amount)個")
+                                                    .foregroundColor(
+                                                        item.isChecked
+                                                            ? .gray
+                                                            : .secondary
+                                                    )
+                                            } icon: {
+                                                Image(
+                                                    systemName:
+                                                        "shippingbox"
+                                                )
+                                                .foregroundColor(
+                                                    item.isChecked
+                                                        ? .gray : .pink)
+                                            }
+                                            .font(.subheadline)
+
+                                            Label {
+                                                if let price = item.price {
+                                                    Text(
+                                                        "\(price, format: .currency(code: "JPY"))"
+                                                    )
+                                                    .foregroundColor(
+                                                        item.isChecked
+                                                            ? .gray
+                                                            : .secondary
+                                                    )
+                                                } else {
+                                                    Text("-")
+                                                        .foregroundColor(
+                                                            item.isChecked
+                                                                ? .gray
+                                                                : .secondary
+                                                        )
+                                                }
+                                            } icon: {
+                                                Image(
+                                                    systemName:
+                                                        "yensign.circle"
+                                                )
+                                                .foregroundColor(
+                                                    item.isChecked
+                                                        ? .gray : .pink)
+                                            }
+                                            .font(.subheadline)
+
+                                            Spacer()
                                         }
                                     }
+                                    .padding(.vertical, 4)
                                 }
                             }
                             .onDelete(perform: deleteItems(indexes:))
