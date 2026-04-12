@@ -96,6 +96,22 @@ struct ScannerView: View {
             }
             .frame(maxHeight: 250)
 
+            HStack {
+                Button("キャンセル") {
+                    dismiss()
+                }
+                .buttonStyle(TertiaryButtonStyle(size: .medium))
+
+                Spacer()
+
+                Button("保存") {
+                    validateAndSave()
+                }
+                .buttonStyle(PrimaryButtonStyle(size: .medium))
+            }
+            .padding(.horizontal)
+            .padding(.vertical, 8)
+
             Form {
                 VStack(alignment: .leading) {
                     HStack {
@@ -141,18 +157,6 @@ struct ScannerView: View {
                         text: $amount, placeholder: "個数",
                         keyboardType: .numberPad
                     )
-                }
-
-                HStack {
-                    Button("キャンセル") {
-                        dismiss()
-                    }
-                    .buttonStyle(TertiaryButtonStyle(size: .medium))
-
-                    Button("保存") {
-                        validateAndSave()
-                    }
-                    .buttonStyle(PrimaryButtonStyle(size: .medium))
                 }
             }
         }
