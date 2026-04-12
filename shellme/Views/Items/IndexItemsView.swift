@@ -153,8 +153,6 @@ struct IndexItemView: View {
                     .frame(width: 320, height: 50)
             }
         }
-        .toolbarBackground(Color.pink, for: .navigationBar)
-        .toolbarBackground(.visible, for: .navigationBar)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
                 Button(role: .destructive) {
@@ -162,8 +160,6 @@ struct IndexItemView: View {
                 } label: {
                     Image(systemName: "trash")
                         .resizable()
-                        .frame(width: 30, height: 30)
-                        .foregroundColor(.white)
                 }
             }
 
@@ -171,8 +167,6 @@ struct IndexItemView: View {
                 NavigationLink(destination: SettingsView()) {
                     Image(systemName: "gearshape.fill")
                         .resizable()
-                        .frame(width: 30, height: 30)
-                        .foregroundColor(.white)
                 }
             }
         }

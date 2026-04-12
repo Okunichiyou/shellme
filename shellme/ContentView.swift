@@ -14,21 +14,6 @@ struct ContentView: View {
         let appearance = UINavigationBarAppearance()
         appearance.backgroundColor = UIColor.systemPink
 
-        appearance.titleTextAttributes = [
-            .foregroundColor: UIColor.white
-        ]
-
-        let backButtonAppearance = UIBarButtonItemAppearance()
-        backButtonAppearance.normal.titleTextAttributes = [
-            .foregroundColor: UIColor.white
-        ]
-        appearance.backButtonAppearance = backButtonAppearance
-
-        let backImage = UIImage(systemName: "chevron.backward")?.withTintColor(
-            .white, renderingMode: .alwaysOriginal)
-        appearance.setBackIndicatorImage(
-            backImage, transitionMaskImage: backImage)
-
         UINavigationBar.appearance().standardAppearance = appearance
         UINavigationBar.appearance().scrollEdgeAppearance = appearance
     }
@@ -39,7 +24,8 @@ struct ContentView: View {
         }
         .onReceive(
             NotificationCenter.default.publisher(
-                for: UIApplication.didBecomeActiveNotification)
+                for: UIApplication.didBecomeActiveNotification
+            )
         ) { _ in
             OperationQueue.main.addOperation {
                 ATTrackingManager.requestTrackingAuthorization(
