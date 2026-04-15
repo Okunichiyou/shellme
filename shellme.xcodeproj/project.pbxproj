@@ -436,6 +436,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = shellme/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "シェルメ";
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.shopping";
 				INFOPLIST_KEY_NSCameraUsageDescription = "カメラで映したテキストを入力するために利用許可が必要です。";
 				INFOPLIST_KEY_NSUserTrackingUsageDescription = "このアプリでは、広告のカスタマイズにトラッキングデータを使用します。";
@@ -478,6 +479,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = shellme/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "シェルメ";
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.shopping";
 				INFOPLIST_KEY_NSCameraUsageDescription = "カメラで映したテキストを入力するために利用許可が必要です。";
 				INFOPLIST_KEY_NSUserTrackingUsageDescription = "このアプリでは、広告のカスタマイズにトラッキングデータを使用します。";
