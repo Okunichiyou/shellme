@@ -7,7 +7,10 @@
 `.env`ファイルをプロジェクトルートに作成してください：
 
 ```text
-BASE_URL=http://192.168.x.x:8787
+# Debug環境（ローカル開発用）
+BASE_URLDebug=http://192.168.x.x:8787
+# Release環境（本番用）
+BASE_URLRelease=https://your-production-url.workers.dev
 ```
 
 ### Arkanaでキーを生成
@@ -28,4 +31,4 @@ npm run dev -- --ip 0.0.0.0
 ```
 
 同じWiFi上の端末からアクセスする場合は `--ip 0.0.0.0` オプションが必要です。
-起動後、自分のIPアドレス（例: `http://192.168.x.x:8787`）を`.env`の`BASE_URL`に設定してください。
+起動後、自分のIPアドレス（例: `http://192.168.x.x:8787`）を`.env`の`BASE_URLDebug`に設定してください。

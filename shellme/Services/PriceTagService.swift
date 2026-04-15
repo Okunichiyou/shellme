@@ -53,7 +53,11 @@ enum PriceTagServiceError: LocalizedError {
 }
 
 final class PriceTagService: Sendable {
-    private let baseURL = Keys.Global().bASE_URL
+    #if DEBUG
+    private let baseURL = Keys.Debug().bASE_URL
+    #else
+    private let baseURL = Keys.Release().bASE_URL
+    #endif
 
     func parsePriceTag(items: [TextItem]) async throws -> PriceTagResponse {
         guard let url = URL(string: "\(baseURL)/api/parse-price-tag") else {
